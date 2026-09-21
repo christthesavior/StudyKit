@@ -1,0 +1,1974 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>StudyKit — Free Tools for Students</title>
+<meta name="description" content="Free browser-based tools for students: word counter, PDF tools, OCR, GPA calculator, summarizer, study timer. No sign-up, files never leave your device." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ============================ DESIGN TOKENS ============================ */
+:root{
+  --brand-1:#5b5bd6;
+  --brand-2:#8b5cf6;
+  --brand-3:#22b8a6;
+  --brand-4:#f59e0b;
+  --brand-5:#ef6461;
+
+  --bg:#f6f7fb;
+  --bg-soft:#eef0f8;
+  --panel:#ffffff;
+  --panel-2:#f9fafd;
+  --ink:#141a2e;
+  --ink-2:#2c3550;
+  --muted:#6b7590;
+  --line:#e4e7f2;
+  --line-soft:#eef0f7;
+
+  --accent:var(--brand-1);
+  --accent-ink:#ffffff;
+  --accent-soft:rgba(91,91,214,.10);
+  --green:#12916d;
+  --danger:#d64545;
+  --warn:#b47708;
+
+  --radius:16px;
+  --radius-sm:11px;
+  --shadow-sm:0 1px 2px rgba(20,26,46,.05), 0 2px 8px rgba(20,26,46,.05);
+  --shadow:0 2px 6px rgba(20,26,46,.06), 0 14px 34px rgba(20,26,46,.08);
+  --shadow-lg:0 30px 70px rgba(20,26,46,.14);
+  --hero-grad:linear-gradient(135deg,#5b5bd6 0%,#7c4ddb 45%,#22b8a6 120%);
+  --ring:rgba(91,91,214,.35);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0e1220; --bg-soft:#141a2b; --panel:#171e30; --panel-2:#1c2438;
+    --ink:#eaeefb; --ink-2:#c7cfe6; --muted:#98a3c0; --line:#28324a; --line-soft:#222b40;
+    --accent:#8ea2ff; --accent-ink:#0b1020; --accent-soft:rgba(142,162,255,.14);
+    --green:#4ad2a8; --danger:#ff8a8a; --warn:#f0be5c;
+    --shadow-sm:0 1px 2px rgba(0,0,0,.45), 0 2px 8px rgba(0,0,0,.35);
+    --shadow:0 2px 6px rgba(0,0,0,.45), 0 14px 34px rgba(0,0,0,.45);
+    --shadow-lg:0 30px 70px rgba(0,0,0,.55);
+    --ring:rgba(142,162,255,.45);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0e1220; --bg-soft:#141a2b; --panel:#171e30; --panel-2:#1c2438;
+  --ink:#eaeefb; --ink-2:#c7cfe6; --muted:#98a3c0; --line:#28324a; --line-soft:#222b40;
+  --accent:#8ea2ff; --accent-ink:#0b1020; --accent-soft:rgba(142,162,255,.14);
+  --green:#4ad2a8; --danger:#ff8a8a; --warn:#f0be5c;
+  --shadow-sm:0 1px 2px rgba(0,0,0,.45), 0 2px 8px rgba(0,0,0,.35);
+  --shadow:0 2px 6px rgba(0,0,0,.45), 0 14px 34px rgba(0,0,0,.45);
+  --shadow-lg:0 30px 70px rgba(0,0,0,.55);
+  --ring:rgba(142,162,255,.45);
+}
+
+:root{
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top, 0px);
+  padding-bottom:env(safe-area-inset-bottom, 0px);
+}
+html{scroll-padding-top:calc(76px + env(safe-area-inset-top, 0px));}
+*,*::before,*::after{box-sizing:inherit}
+
+html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);
+  font-family:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  line-height:1.6;-webkit-text-size-adjust:100%;overflow-x:hidden}
+h1,h2,h3,h4,.brand-name,.stat .n,.time{font-family:"Outfit","Inter",system-ui,sans-serif}
+a{color:var(--accent)}
+button,input,select,textarea{font:inherit;color:inherit}
+img,svg{max-width:100%}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;
+  clip:rect(0 0 0 0);white-space:nowrap;border:0}
+
+/* ============================ LAYOUT ============================ */
+.container{max-width:1120px;margin:0 auto;padding:0 20px;width:100%}
+
+/* ============================ HEADER ============================ */
+header.site{position:sticky;top:env(safe-area-inset-top, 0px);z-index:60;
+  background:color-mix(in srgb, var(--panel) 86%, transparent);
+  border-bottom:1px solid var(--line);backdrop-filter:blur(14px) saturate(1.3)}
+.nav{display:flex;align-items:center;gap:14px;padding:12px 0;position:relative}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--ink);white-space:nowrap}
+.brand-mark{width:38px;height:38px;flex:none;border-radius:12px;box-shadow:0 6px 16px rgba(91,91,214,.35)}
+.brand-name{font-weight:800;font-size:1.22rem;letter-spacing:-.02em;line-height:1.05}
+.brand-name span{background:linear-gradient(120deg,var(--brand-1),var(--brand-3));
+  -webkit-background-clip:text;background-clip:text;color:transparent}
+.brand-tag{display:block;font-size:.66rem;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--muted);font-weight:600;font-family:"Inter",sans-serif}
+.nav-links{display:flex;gap:4px;margin-left:16px;flex:1}
+.nav-links a{color:var(--ink-2);text-decoration:none;font-weight:500;font-size:.94rem;
+  padding:9px 12px;border-radius:9px;transition:.15s}
+.nav-links a:hover{background:var(--accent-soft);color:var(--accent)}
+.nav-actions{display:flex;gap:8px;align-items:center;margin-left:auto}
+.icon-btn{background:var(--panel-2);border:1px solid var(--line);color:var(--ink);
+  border-radius:11px;padding:0 11px;cursor:pointer;height:42px;min-width:42px;
+  display:inline-grid;place-items:center;transition:.15s}
+.icon-btn:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
+.icon-btn svg{width:19px;height:19px}
+.menu-toggle{display:none}
+
+@media (max-width: 880px){
+  .nav-links{display:none;position:absolute;top:calc(100% + 1px);left:0;right:0;background:var(--panel);
+    border-bottom:1px solid var(--line);flex-direction:column;gap:2px;padding:10px 20px 16px;margin:0;
+    box-shadow:var(--shadow)}
+  .nav-links.open{display:flex}
+  .nav-links a{padding:13px 12px}
+  .menu-toggle{display:inline-grid}
+}
+
+/* ============================ HERO ============================ */
+.hero{position:relative;margin:22px 0 10px;border-radius:26px;overflow:hidden;
+  background:var(--hero-grad);color:#fff;box-shadow:var(--shadow-lg)}
+.hero::after{content:"";position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(900px 340px at 82% -10%, rgba(255,255,255,.28), transparent 60%),
+             radial-gradient(600px 300px at 5% 110%, rgba(0,0,0,.22), transparent 60%)}
+.hero-inner{position:relative;z-index:2;display:grid;grid-template-columns:1.15fr .85fr;
+  gap:26px;align-items:center;padding:52px 40px}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.18);
+  border:1px solid rgba(255,255,255,.3);color:#fff;padding:7px 14px;border-radius:999px;
+  font-size:.8rem;font-weight:600;letter-spacing:.02em;margin-bottom:16px;backdrop-filter:blur(4px)}
+.hero h1{font-size:clamp(2rem,4.4vw,3.15rem);line-height:1.08;margin:0 0 14px;letter-spacing:-.03em;font-weight:800}
+.hero h1 em{font-style:normal;color:#ffe08a}
+.hero p.lede{margin:0 0 24px;font-size:1.06rem;color:rgba(255,255,255,.92);max-width:52ch}
+.hero-art{display:block}
+.hero-art svg{width:100%;height:auto;filter:drop-shadow(0 22px 40px rgba(0,0,0,.28))}
+
+.search-wrap{position:relative;max-width:520px}
+.search-wrap input{width:100%;padding:16px 18px 16px 50px;border:1px solid transparent;
+  border-radius:14px;background:var(--panel);color:var(--ink);box-shadow:var(--shadow);font-size:1rem}
+.search-wrap input::placeholder{color:var(--muted)}
+.search-wrap input:focus{outline:none;box-shadow:var(--shadow),0 0 0 4px rgba(255,255,255,.4)}
+.search-wrap .mag{position:absolute;left:17px;top:50%;transform:translateY(-50%);
+  color:var(--muted);display:grid;pointer-events:none}
+.search-wrap .mag svg{width:19px;height:19px}
+.hero-chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.hero-chips button{background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.3);
+  color:#fff;border-radius:999px;padding:6px 13px;font-size:.84rem;cursor:pointer;transition:.15s}
+.hero-chips button:hover{background:rgba(255,255,255,.3)}
+
+@media (max-width:900px){
+  .hero-inner{grid-template-columns:1fr;padding:38px 24px;text-align:left}
+  .hero-art{max-width:340px;margin:6px auto 0}
+  .search-wrap{max-width:100%}
+}
+
+/* ============================ TRUST BAR ============================ */
+.trust{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:14px;margin:26px 0 8px}
+.trust .item{display:flex;gap:12px;align-items:flex-start;background:var(--panel);
+  border:1px solid var(--line);border-radius:var(--radius);padding:15px 16px;box-shadow:var(--shadow-sm)}
+.trust .item .tico{width:36px;height:36px;border-radius:10px;flex:none;display:grid;place-items:center;color:#fff}
+.trust .item svg{width:19px;height:19px}
+.trust .item b{display:block;font-size:.94rem;font-weight:600}
+.trust .item small{color:var(--muted);font-size:.83rem;line-height:1.45;display:block}
+
+/* ============================ CATEGORIES ============================ */
+.cats{display:flex;gap:9px;flex-wrap:wrap;margin:6px 0 20px}
+.cat-chip{border:1px solid var(--line);background:var(--panel);color:var(--ink-2);
+  border-radius:999px;padding:9px 16px;font-size:.9rem;font-weight:500;cursor:pointer;
+  display:inline-flex;align-items:center;gap:8px;transition:.15s}
+.cat-chip:hover{border-color:var(--accent);color:var(--accent)}
+.cat-chip.active{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);font-weight:600}
+.cat-chip .cnt{font-size:.76rem;opacity:.7}
+
+/* ============================ SECTION + GRID ============================ */
+section.tools{padding:16px 0 26px}
+.section-head{display:flex;align-items:flex-end;justify-content:space-between;gap:14px;margin:0 0 18px;flex-wrap:wrap}
+h2.section-title{font-size:1.5rem;margin:0;letter-spacing:-.02em;font-weight:700}
+.section-head p{margin:4px 0 0;color:var(--muted);font-size:.94rem}
+.section-head a.more{font-size:.9rem;text-decoration:none;font-weight:600}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:16px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
+  padding:20px;box-shadow:var(--shadow-sm);cursor:pointer;text-align:left;position:relative;
+  overflow:hidden;transition:transform .16s ease, box-shadow .16s ease, border-color .16s ease;
+  display:flex;flex-direction:column;gap:6px;text-decoration:none;color:inherit}
+.card::before{content:"";position:absolute;inset:0 0 auto 0;height:3px;background:var(--c,var(--brand-1));
+  opacity:0;transition:.18s}
+.card:hover{transform:translateY(-3px);box-shadow:var(--shadow);border-color:color-mix(in srgb,var(--c,var(--brand-1)) 45%, var(--line))}
+.card:hover::before{opacity:1}
+.card .ico{width:44px;height:44px;border-radius:13px;display:grid;place-items:center;
+  margin-bottom:10px;color:#fff;box-shadow:0 8px 18px -8px var(--c,var(--brand-1))}
+.card .ico svg{width:22px;height:22px}
+.card h3{margin:0;font-size:1.04rem;font-weight:700;letter-spacing:-.01em}
+.card p{margin:0;color:var(--muted);font-size:.89rem;line-height:1.5}
+.card .tag{margin-top:auto;padding-top:10px;font-size:.74rem;font-weight:600;letter-spacing:.08em;
+  text-transform:uppercase;color:var(--c,var(--brand-1))}
+.no-results{padding:40px 24px;text-align:center;color:var(--muted);border:1px dashed var(--line);
+  border-radius:var(--radius);background:var(--panel)}
+.no-results strong{display:block;color:var(--ink);font-size:1.05rem;margin-bottom:4px}
+
+/* ============================ TOOL PANEL ============================ */
+.tool{background:var(--panel);border:1px solid var(--line);border-radius:20px;
+  padding:26px;box-shadow:var(--shadow);margin-bottom:20px}
+.tool-head{display:flex;gap:16px;align-items:flex-start;margin-bottom:22px;
+  padding-bottom:20px;border-bottom:1px solid var(--line-soft)}
+.tool-head .ico{width:52px;height:52px;border-radius:15px;flex:none;display:grid;place-items:center;color:#fff}
+.tool-head .ico svg{width:26px;height:26px}
+.tool-head h2{margin:0 0 3px;font-size:1.5rem;letter-spacing:-.02em}
+.tool-head .desc{color:var(--muted);margin:0;font-size:.96rem}
+.row{display:flex;gap:11px;flex-wrap:wrap;align-items:center;margin-bottom:14px}
+.row > *{min-width:0}
+.field-wrap{flex:1;min-width:170px}
+label.field{display:block;font-size:.83rem;color:var(--muted);margin-bottom:6px;font-weight:600;
+  letter-spacing:.02em}
+input[type=text],input[type=number],input[type=search],select,textarea{
+  width:100%;padding:12px 14px;border:1px solid var(--line);border-radius:11px;
+  background:var(--panel-2);color:var(--ink);transition:.15s}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--accent);
+  box-shadow:0 0 0 3px var(--ring);background:var(--panel)}
+textarea{min-height:170px;resize:vertical;line-height:1.6}
+select{cursor:pointer}
+
+button.btn{background:var(--accent);color:var(--accent-ink);border:none;padding:12px 20px;
+  border-radius:11px;cursor:pointer;font-weight:600;min-height:46px;display:inline-flex;
+  align-items:center;gap:8px;justify-content:center;transition:.15s;box-shadow:0 6px 16px -8px var(--accent)}
+button.btn:hover{filter:brightness(1.07);transform:translateY(-1px)}
+button.btn:active{transform:translateY(0)}
+button.btn.secondary{background:var(--panel-2);color:var(--ink);border:1px solid var(--line);box-shadow:none}
+button.btn.secondary:hover{border-color:var(--accent);color:var(--accent)}
+button.btn.danger{background:transparent;color:var(--danger);border:1px solid var(--line);box-shadow:none}
+button.btn.danger:hover{border-color:var(--danger);background:rgba(214,69,69,.08)}
+button.btn:disabled{opacity:.5;cursor:not-allowed;transform:none;filter:none}
+button.btn svg{width:17px;height:17px}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+.drop{border:2px dashed var(--line);border-radius:var(--radius);padding:34px 20px;text-align:center;
+  color:var(--muted);background:var(--panel-2);cursor:pointer;transition:.18s}
+.drop:hover,.drop.hover{border-color:var(--accent);background:var(--accent-soft);color:var(--accent)}
+.drop .dico{width:52px;height:52px;margin:0 auto 12px;border-radius:15px;display:grid;place-items:center;
+  background:var(--accent-soft);color:var(--accent)}
+.drop .dico svg{width:25px;height:25px}
+.drop strong{color:var(--ink);display:block;margin-bottom:3px;font-size:1.02rem;font-weight:600}
+.drop span{font-size:.89rem}
+
+.status{margin-top:12px;font-size:.92rem;min-height:1.2em}
+.status:empty{margin-top:0}
+.status.err{color:var(--danger)}
+.status.ok{color:var(--green)}
+.status.info{color:var(--muted)}
+.progress{height:6px;border-radius:99px;background:var(--line);overflow:hidden;margin-top:10px;display:none}
+.progress.on{display:block}
+.progress i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--brand-1),var(--brand-3));
+  transition:width .2s}
+
+.file-list{list-style:none;padding:0;margin:14px 0 0}
+.file-list li{display:flex;align-items:center;gap:10px;padding:11px 13px;border:1px solid var(--line);
+  border-radius:12px;margin-bottom:9px;background:var(--panel-2)}
+.file-list li .fico{width:30px;height:30px;border-radius:9px;flex:none;display:grid;place-items:center;
+  background:var(--accent-soft);color:var(--accent)}
+.file-list li .fico svg{width:16px;height:16px}
+.file-list li .name{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:.92rem}
+.file-list li .sz{color:var(--muted);font-size:.83rem;white-space:nowrap}
+.mini{background:transparent;border:1px solid var(--line);color:var(--ink);border-radius:8px;
+  width:32px;height:32px;cursor:pointer;display:grid;place-items:center;flex:none;font-size:.9rem}
+.mini:hover{border-color:var(--accent);color:var(--accent)}
+.mini.rm:hover{border-color:var(--danger);color:var(--danger)}
+
+.img-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:12px;margin-top:14px}
+.img-grid figure{margin:0;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--panel-2)}
+.img-grid img{aspect-ratio:1;object-fit:cover;width:100%;display:block}
+.img-grid figcaption{font-size:.74rem;padding:7px 8px;color:var(--muted);
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.img-grid .ctrls{display:flex;border-top:1px solid var(--line)}
+.img-grid .ctrls button{flex:1;background:transparent;border:none;padding:8px;cursor:pointer;color:var(--muted)}
+.img-grid .ctrls button:hover{background:var(--accent-soft);color:var(--accent)}
+
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-top:16px}
+.stat{background:var(--panel-2);border:1px solid var(--line);border-radius:14px;padding:14px 16px}
+.stat .n{font-size:1.55rem;font-weight:700;letter-spacing:-.02em;line-height:1.2}
+.stat .l{color:var(--muted);font-size:.74rem;text-transform:uppercase;letter-spacing:.08em;font-weight:600}
+
+table.gpa-table{width:100%;border-collapse:collapse;margin-top:10px}
+.gpa-table th,.gpa-table td{border-bottom:1px solid var(--line);padding:9px 8px;text-align:left;vertical-align:middle}
+.gpa-table th{font-weight:600;font-size:.74rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
+.gpa-table td input,.gpa-table td select{padding:9px 11px}
+.table-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.gpa-result{margin-top:16px;padding:18px 20px;border-radius:15px;background:var(--hero-grad);
+  color:#fff;display:none;box-shadow:var(--shadow)}
+.gpa-result.on{display:block}
+.gpa-result .big{font-size:2.4rem;font-weight:800;line-height:1.1;font-family:"Outfit",sans-serif}
+.gpa-result .sub{opacity:.9;font-size:.9rem}
+
+.timer-card{display:flex;flex-direction:column;align-items:center;gap:18px;padding:26px 16px;
+  border-radius:20px;background:var(--panel-2);border:1px solid var(--line)}
+.timer-ring{position:relative;width:250px;max-width:74vw;aspect-ratio:1;display:grid;place-items:center}
+.timer-ring svg{position:absolute;inset:0;width:100%;height:100%;transform:rotate(-90deg)}
+.timer-ring .track{fill:none;stroke:var(--line);stroke-width:10}
+.timer-ring .bar{fill:none;stroke:var(--accent);stroke-width:10;stroke-linecap:round;transition:stroke-dashoffset .3s linear}
+.timer-ring.break .bar{stroke:var(--green)}
+.timer-inner{position:relative;text-align:center}
+.timer-inner .mode{font-weight:700;letter-spacing:.18em;color:var(--muted);font-size:.74rem;text-transform:uppercase}
+.timer-inner .time{font-size:clamp(2.6rem,9vw,3.4rem);font-weight:800;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.timer-inner .rounds{font-size:.82rem;color:var(--muted)}
+.timer-btns{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+.timer-btns button{min-width:104px}
+
+.note{background:var(--panel-2);border:1px solid var(--line);border-left:3px solid var(--brand-4);
+  padding:12px 16px;border-radius:12px;color:var(--muted);font-size:.88rem;margin-top:16px;line-height:1.55}
+
+.tool-view{display:none;animation:fade .22s ease}
+.tool-view.active{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.crumbs{color:var(--muted);font-size:.88rem;margin:18px 0 14px;display:flex;gap:7px;align-items:center;flex-wrap:wrap}
+.crumbs a{color:var(--muted);text-decoration:none}
+.crumbs a:hover{color:var(--accent)}
+.crumbs .sep{opacity:.5}
+.crumbs .cur{color:var(--ink);font-weight:500}
+
+.related{margin-top:6px}
+.related h3{font-size:1.05rem;margin:0 0 12px}
+
+/* ============================ CTA ============================ */
+.cta{margin:34px 0 8px;border-radius:22px;padding:34px 30px;background:var(--panel);
+  border:1px solid var(--line);box-shadow:var(--shadow-sm);display:grid;
+  grid-template-columns:1fr auto;gap:22px;align-items:center}
+.cta h3{margin:0 0 6px;font-size:1.35rem;letter-spacing:-.02em}
+.cta p{margin:0;color:var(--muted);max-width:56ch}
+@media (max-width:760px){.cta{grid-template-columns:1fr;text-align:left}}
+
+/* ============================ FOOTER ============================ */
+footer.site{margin-top:46px;border-top:1px solid var(--line);padding:34px 0 26px;
+  color:var(--muted);font-size:.92rem;background:var(--panel)}
+footer .cols{display:grid;grid-template-columns:1.6fr repeat(3,1fr);gap:26px}
+@media (max-width:760px){footer .cols{grid-template-columns:1fr 1fr}}
+footer h4{margin:0 0 10px;color:var(--ink);font-size:.95rem}
+footer a{display:block;color:var(--muted);text-decoration:none;padding:4px 0;font-size:.9rem}
+footer a:hover{color:var(--accent)}
+.foot-bottom{margin-top:24px;padding-top:18px;border-top:1px solid var(--line);
+  display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:.85rem}
+.badge-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.badge-row span{font-size:.75rem;border:1px solid var(--line);border-radius:999px;
+  padding:4px 11px;color:var(--muted)}
+
+.prose p{color:var(--ink-2)}
+.prose h3{margin:22px 0 6px;font-size:1.05rem}
+.prose code{background:var(--panel-2);border:1px solid var(--line);border-radius:6px;padding:1px 6px;font-size:.88em}
+</style>
+</head>
+<body>
+
+<header class="site">
+  <div class="container nav">
+    <a href="#/" class="brand" aria-label="StudyKit home">
+      <svg class="brand-mark" viewBox="0 0 48 48" aria-hidden="true">
+        <defs>
+          <linearGradient id="bm" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#6366f1"/><stop offset="55%" stop-color="#8b5cf6"/><stop offset="100%" stop-color="#22b8a6"/>
+          </linearGradient>
+        </defs>
+        <rect width="48" height="48" rx="13" fill="url(#bm)"/>
+        <path d="M10 16.5c4.6-2.6 9.2-2.6 13.9 0v18c-4.7-2.6-9.3-2.6-13.9 0z" fill="#fff" opacity=".95"/>
+        <path d="M38 16.5c-4.6-2.6-9.2-2.6-13.9 0v18c4.7-2.6 9.3-2.6 13.9 0z" fill="#fff" opacity=".65"/>
+        <circle cx="24" cy="12" r="3.4" fill="#ffe08a"/>
+      </svg>
+      <span class="brand-name">Study<span>Kit</span>
+        <small class="brand-tag">Student Toolbox</small>
+      </span>
+    </a>
+    <nav class="nav-links" id="navLinks" aria-label="Main">
+      <a href="#/tools">All Tools</a>
+      <a href="#/tools?cat=pdf">PDF</a>
+      <a href="#/tools?cat=text">Writing</a>
+      <a href="#/tools?cat=calc">Calculators</a>
+      <a href="#/tools?cat=study">Study</a>
+    </nav>
+    <div class="nav-actions">
+      <button class="icon-btn" id="searchBtn" aria-label="Search tools" title="Search">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      </button>
+      <button class="icon-btn" id="themeBtn" aria-label="Toggle dark mode" title="Theme"></button>
+      <button class="icon-btn menu-toggle" id="menuToggle" aria-label="Menu" aria-expanded="false">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main id="app" class="container">
+
+  <!-- ===================== HOME ===================== -->
+  <div class="tool-view active" id="view-home">
+    <section class="hero">
+      <div class="hero-inner">
+        <div>
+          <span class="hero-badge">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+            100% free · no account · works offline-first
+          </span>
+          <h1>Everything you need to <em>finish the assignment</em>.</h1>
+          <p class="lede">Eleven fast, private tools for essays, PDFs, grades and focus sessions. Your files are processed inside your browser — nothing is uploaded.</p>
+          <div class="search-wrap">
+            <span class="mag" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg></span>
+            <label for="homeSearch" class="sr-only">Search tools</label>
+            <input id="homeSearch" type="search" placeholder="What do you need? Try “pdf”, “gpa”, “essay”…" autocomplete="off" />
+          </div>
+          <div class="hero-chips" id="heroChips"></div>
+        </div>
+        <div class="hero-art" aria-hidden="true">
+          <svg viewBox="0 0 320 260" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="pg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#e8ecff"/></linearGradient>
+              <linearGradient id="pg2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffe08a"/><stop offset="1" stop-color="#f59e0b"/></linearGradient>
+            </defs>
+            <ellipse cx="160" cy="232" rx="118" ry="16" fill="rgba(0,0,0,.18)"/>
+            <rect x="52" y="180" width="216" height="16" rx="6" fill="#2d2a6e"/>
+            <rect x="62" y="166" width="196" height="16" rx="5" fill="#4338ca"/>
+            <rect x="72" y="152" width="176" height="16" rx="5" fill="#22b8a6"/>
+            <g transform="rotate(-6 150 90)">
+              <rect x="82" y="34" width="136" height="118" rx="10" fill="url(#pg)"/>
+              <rect x="98" y="56" width="104" height="8" rx="4" fill="#c7cbf0"/>
+              <rect x="98" y="74" width="88" height="8" rx="4" fill="#dfe2f7"/>
+              <rect x="98" y="92" width="96" height="8" rx="4" fill="#dfe2f7"/>
+              <rect x="98" y="110" width="62" height="8" rx="4" fill="#dfe2f7"/>
+              <rect x="98" y="128" width="46" height="10" rx="5" fill="#8b5cf6"/>
+            </g>
+            <circle cx="246" cy="72" r="30" fill="url(#pg2)"/>
+            <path d="M246 56v18l11 7" stroke="#7c4a02" stroke-width="5" stroke-linecap="round" fill="none"/>
+            <g>
+              <rect x="40" y="96" width="54" height="54" rx="13" fill="#ffffff" opacity=".92"/>
+              <path d="M54 123h26M67 110v26" stroke="#22b8a6" stroke-width="6" stroke-linecap="round"/>
+            </g>
+          </svg>
+        </div>
+      </div>
+    </section>
+
+    <div class="trust">
+      <div class="item">
+        <span class="tico" style="background:linear-gradient(135deg,#5b5bd6,#8b5cf6)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 4 6.5V12c0 5 3.4 8.3 8 9 4.6-.7 8-4 8-9V6.5z"/></svg></span>
+        <div><b>Private by design</b><small>PDFs, images and text never leave your device.</small></div>
+      </div>
+      <div class="item">
+        <span class="tico" style="background:linear-gradient(135deg,#22b8a6,#0ea5a0)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 4 14h6l-1 8 9-12h-6z"/></svg></span>
+        <div><b>Instant results</b><small>No uploads, no queues, no waiting rooms.</small></div>
+      </div>
+      <div class="item">
+        <span class="tico" style="background:linear-gradient(135deg,#f59e0b,#ef6461)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span>
+        <div><b>Built for deadlines</b><small>Every tool is two clicks from the home page.</small></div>
+      </div>
+      <div class="item">
+        <span class="tico" style="background:linear-gradient(135deg,#ef6461,#d946ef)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 3 8l9 5 9-5z"/><path d="M7 11v5c0 1.7 2.2 3 5 3s5-1.3 5-3v-5"/></svg></span>
+        <div><b>Free forever</b><small>No sign-up, no trial, no credit card.</small></div>
+      </div>
+    </div>
+
+    <section class="tools">
+      <div class="section-head">
+        <div>
+          <h2 class="section-title">Popular this week</h2>
+          <p>The tools students open most before a deadline.</p>
+        </div>
+        <a class="more" href="#/tools">Browse all →</a>
+      </div>
+      <div class="grid" id="popularGrid"></div>
+    </section>
+
+    <section class="tools">
+      <div class="section-head">
+        <div>
+          <h2 class="section-title">All tools</h2>
+          <p>Pick a category or search above.</p>
+        </div>
+      </div>
+      <div class="cats" id="homeCats"></div>
+      <div class="grid" id="allToolsGrid"></div>
+      <div id="homeNoResults" class="no-results" hidden>
+        <strong>Nothing matched that.</strong>
+        Try “pdf”, “word”, “grade” or “timer”.
+      </div>
+    </section>
+
+    <div class="cta">
+      <div>
+        <h3>Keep StudyKit one tap away</h3>
+        <p>Add it to your home screen or bookmark bar. It loads instantly and works the same on phone, tablet and laptop.</p>
+      </div>
+      <button class="btn" id="ctaBtn">Start with the Word Counter</button>
+    </div>
+  </div>
+
+  <!-- ===================== TOOLS INDEX ===================== -->
+  <div class="tool-view" id="view-tools">
+    <p class="crumbs"><a href="#/">Home</a><span class="sep">/</span><span class="cur" id="toolsCrumb">All Tools</span></p>
+    <div class="section-head">
+      <div>
+        <h2 class="section-title" id="toolsTitle">All Tools</h2>
+        <p id="toolsCount"></p>
+      </div>
+    </div>
+    <div class="search-wrap" style="margin-bottom:18px;max-width:100%">
+      <span class="mag" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg></span>
+      <label for="toolsSearch" class="sr-only">Search tools</label>
+      <input id="toolsSearch" type="search" placeholder="Search tools…" autocomplete="off" />
+    </div>
+    <div class="cats" id="toolsCats"></div>
+    <div class="grid" id="toolsGrid"></div>
+    <div id="toolsNoResults" class="no-results" hidden>
+      <strong>No tools found.</strong>
+      Try “pdf”, “word”, or “calculate”.
+    </div>
+  </div>
+
+  <!-- ===================== TOOL MOUNT ===================== -->
+  <div class="tool-view" id="view-tool">
+    <p class="crumbs"><a href="#/">Home</a><span class="sep">/</span><a href="#/tools">Tools</a><span class="sep">/</span><span class="cur" id="toolCrumb"></span></p>
+    <div id="toolMount"></div>
+    <div class="related">
+      <h3>More tools like this</h3>
+      <div class="grid" id="relatedGrid"></div>
+    </div>
+  </div>
+
+  <!-- ===================== STATIC PAGES ===================== -->
+  <div class="tool-view" id="view-privacy">
+    <p class="crumbs"><a href="#/">Home</a><span class="sep">/</span><span class="cur">Privacy</span></p>
+    <div class="tool prose">
+      <h2>Privacy Policy</h2>
+      <p>StudyKit processes your files and text <strong>inside your browser</strong> for every tool listed on this site: PDF → Text, Image → Text (OCR), PDF Merge, PDF Compressor, Image → PDF, Word Counter, Case Converter, Text Summarizer, Percentage Calculator, GPA Calculator and Study Timer.</p>
+      <h3>What we never do</h3>
+      <p>No file you open here is uploaded to a server. There is no account system and we do not collect names, emails or documents.</p>
+      <h3>Third-party code</h3>
+      <p>PDF and OCR engines are downloaded from public CDNs the first time you use those tools; your browser may then cache them. Those CDNs can see a plain request for the library file — not your documents.</p>
+      <h3>Stored on your device</h3>
+      <p>Only your theme preference, kept in your browser's <code>localStorage</code>. Clear your site data and it is gone.</p>
+    </div>
+  </div>
+
+  <div class="tool-view" id="view-terms">
+    <p class="crumbs"><a href="#/">Home</a><span class="sep">/</span><span class="cur">Terms</span></p>
+    <div class="tool prose">
+      <h2>Terms of Service</h2>
+      <p>StudyKit is provided free of charge, “as is”, without warranty of any kind. You are responsible for the files and text you process and for checking any result before you submit it.</p>
+      <h3>Fair use</h3>
+      <p>Do not process content you do not have the right to use, and do not attempt to disrupt or automate the service at scale.</p>
+      <h3>Academic honesty</h3>
+      <p>The summarizer and calculators are study aids. Follow your institution's rules on what help is allowed in graded work.</p>
+      <h3>Changes</h3>
+      <p>We may update these terms; continued use constitutes acceptance.</p>
+    </div>
+  </div>
+
+  <div class="tool-view" id="view-about">
+    <p class="crumbs"><a href="#/">Home</a><span class="sep">/</span><span class="cur">About</span></p>
+    <div class="tool prose">
+      <h2>About StudyKit</h2>
+      <p>StudyKit started as a folder of small scripts used the night before deadlines: count the words, pull text out of a lecture PDF, work out whether that C+ actually sinks the semester.</p>
+      <p>Everything here runs client-side, so it is fast, it works on a weak connection, and your coursework stays yours. No sign-up wall, no watermarked output, no “upgrade to download”.</p>
+      <h3>Want a tool that is missing?</h3>
+      <p>Tell us on the <a href="#/contact">contact page</a> — student requests decide what gets built next.</p>
+    </div>
+  </div>
+
+  <div class="tool-view" id="view-contact">
+    <p class="crumbs"><a href="#/">Home</a><span class="sep">/</span><span class="cur">Contact</span></p>
+    <div class="tool prose">
+      <h2>Contact</h2>
+      <p>Found a bug, or want a tool added? Email <a href="mailto:hello@example.com">hello@example.com</a> and describe what you were trying to do — that is usually enough to reproduce it.</p>
+      <p>For bug reports, mentioning your browser and the file type you used helps a lot.</p>
+    </div>
+  </div>
+
+</main>
+
+<footer class="site">
+  <div class="container">
+    <div class="cols">
+      <div>
+        <h4>StudyKit</h4>
+        <p style="margin:0;color:var(--muted);font-size:.9rem;max-width:34ch">Friendly, private tools for homework, essays and assignments. Built for students, free forever.</p>
+        <div class="badge-row">
+          <span>🔒 Client-side</span><span>⚡ No uploads</span><span>🎓 Student-made</span>
+        </div>
+      </div>
+      <div>
+        <h4>Popular</h4>
+        <a href="#/tool/word-counter">Word Counter</a>
+        <a href="#/tool/pdf-to-text">PDF → Text</a>
+        <a href="#/tool/image-to-text">Image → Text</a>
+        <a href="#/tool/gpa">GPA Calculator</a>
+      </div>
+      <div>
+        <h4>Categories</h4>
+        <a href="#/tools?cat=pdf">PDF Tools</a>
+        <a href="#/tools?cat=text">Writing Tools</a>
+        <a href="#/tools?cat=calc">Calculators</a>
+        <a href="#/tools?cat=study">Study</a>
+      </div>
+      <div>
+        <h4>Company</h4>
+        <a href="#/about">About</a>
+        <a href="#/privacy">Privacy Policy</a>
+        <a href="#/terms">Terms of Service</a>
+        <a href="#/contact">Contact</a>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>© <span id="year"></span> StudyKit. Made for students, everywhere.</span>
+      <span>Your files stay in your browser.</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+/* =========================================================================
+   StudyKit — single-file app
+   ========================================================================= */
+(function(){
+'use strict';
+
+/* ---------- Utilities ---------- */
+const $  = (s, r=document) => r.querySelector(s);
+const $$ = (s, r=document) => Array.from(r.querySelectorAll(s));
+const el = (tag, attrs={}, ...kids) => {
+  const n = document.createElement(tag);
+  for (const k in attrs) {
+    if (attrs[k] == null) continue;
+    if (k === 'class') n.className = attrs[k];
+    else if (k === 'html') n.innerHTML = attrs[k];
+    else if (k === 'style') n.setAttribute('style', attrs[k]);
+    else if (k.startsWith('on') && typeof attrs[k] === 'function') n.addEventListener(k.slice(2), attrs[k]);
+    else n.setAttribute(k, attrs[k]);
+  }
+  for (const c of kids) { if (c == null) continue; n.append(c.nodeType ? c : document.createTextNode(c)); }
+  return n;
+};
+const svgIcon = (path, extra) => {
+  const s = document.createElementNS('http://www.w3.org/2000/svg','svg');
+  s.setAttribute('viewBox','0 0 24 24');
+  s.setAttribute('fill','none');
+  s.setAttribute('stroke','currentColor');
+  s.setAttribute('stroke-width', extra || '2');
+  s.setAttribute('stroke-linecap','round');
+  s.setAttribute('stroke-linejoin','round');
+  s.innerHTML = path;
+  return s;
+};
+const fmtBytes = b => {
+  if (b == null || !Number.isFinite(b)) return '—';
+  if (b < 1024) return b + ' B';
+  if (b < 1024*1024) return (b/1024).toFixed(1) + ' KB';
+  return (b/1024/1024).toFixed(2) + ' MB';
+};
+const download = (blob, filename) => {
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = filename;
+  document.body.appendChild(a); a.click();
+  setTimeout(()=>{ URL.revokeObjectURL(url); a.remove(); }, 1500);
+};
+const statusNode = (parent) => {
+  const s = el('div', {class:'status', role:'status'});
+  parent.appendChild(s);
+  return s;
+};
+const setStatus = (node, msg, kind='info') => {
+  node.className = 'status ' + kind;
+  node.textContent = msg || '';
+};
+async function copyText(text){
+  try {
+    if (navigator.clipboard && window.isSecureContext) {
+      await navigator.clipboard.writeText(text);
+      return true;
+    }
+  } catch {}
+  try {
+    const ta = document.createElement('textarea');
+    ta.value = text; ta.style.position='fixed'; ta.style.opacity='0';
+    document.body.appendChild(ta); ta.select();
+    const ok = document.execCommand('copy');
+    ta.remove();
+    return ok;
+  } catch { return false; }
+}
+const store = {
+  get(k){ try { return localStorage.getItem(k); } catch { return null; } },
+  set(k,v){ try { localStorage.setItem(k,v); } catch {} }
+};
+
+/* ---------- Lazy script loader ---------- */
+const _loaded = {};
+function loadScript(src){
+  if (_loaded[src]) return _loaded[src];
+  _loaded[src] = new Promise((res, rej) => {
+    const s = document.createElement('script');
+    s.src = src; s.async = true;
+    s.onload = () => res();
+    s.onerror = () => { delete _loaded[src]; rej(new Error('Failed to load ' + src)); };
+    document.head.appendChild(s);
+  });
+  return _loaded[src];
+}
+async function ensurePdfJs(){
+  if (window.pdfjsLib) return window.pdfjsLib;
+  await loadScript('https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js');
+  if (!window.pdfjsLib) throw new Error('PDF engine unavailable');
+  window.pdfjsLib.GlobalWorkerOptions.workerSrc =
+    'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+  return window.pdfjsLib;
+}
+async function ensurePdfLib(){
+  if (window.PDFLib) return window.PDFLib;
+  await loadScript('https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js');
+  if (!window.PDFLib) throw new Error('PDF engine unavailable');
+  return window.PDFLib;
+}
+async function ensureTesseract(){
+  if (window.Tesseract) return window.Tesseract;
+  await loadScript('https://cdnjs.cloudflare.com/ajax/libs/tesseract.js/5.0.4/tesseract.min.js');
+  if (!window.Tesseract) throw new Error('OCR engine unavailable');
+  return window.Tesseract;
+}
+
+/* =========================================================================
+   TOOL REGISTRY
+   ========================================================================= */
+const I = {
+  words:'<path d="M4 6h16M4 12h12M4 18h8"/>',
+  case:'<path d="M4 18 9 6l5 12M5.6 14.5h6.8"/><path d="M21 18v-5.5a2.5 2.5 0 0 0-4.6-1.4"/><path d="M21 15.5a3 3 0 1 1-3 2.5"/>',
+  scissors:'<circle cx="6" cy="6" r="2.5"/><circle cx="6" cy="18" r="2.5"/><path d="M20 4 8.1 16.5M20 20 8.1 7.5"/>',
+  doc:'<path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/>',
+  ocr:'<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 9h4M7 13h7M7 17h3"/><circle cx="17" cy="9.5" r="1.6"/>',
+  merge:'<path d="M7 3v6a4 4 0 0 0 4 4h6"/><path d="M17 3v6a4 4 0 0 1-4 4H7"/><path d="M12 13v8M9 18l3 3 3-3"/>',
+  zip:'<path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M12 11v5M9.5 13.5 12 11l2.5 2.5"/>',
+  img:'<rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8.5" cy="9.5" r="1.5"/><path d="m4 17 5-5 4 4 2.5-2.5L20 17"/>',
+  percent:'<path d="M19 5 5 19"/><circle cx="7.5" cy="7.5" r="2.5"/><circle cx="16.5" cy="16.5" r="2.5"/>',
+  cap:'<path d="M12 3 3 8l9 5 9-5z"/><path d="M7 11v5c0 1.7 2.2 3 5 3s5-1.3 5-3v-5"/>',
+  timer:'<circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2M9 2h6"/>',
+  copy:'<rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/>',
+  dl:'<path d="M12 3v12M8 11l4 4 4-4M4 19h16"/>',
+  trash:'<path d="M4 7h16M10 11v6M14 11v6"/><path d="M6 7l1 13a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1l1-13M9 7V4h6v3"/>',
+  up:'<path d="M12 20V6M6 12l6-6 6 6"/>',
+  play:'<path d="M7 4.5v15l13-7.5z"/>',
+  bolt:'<path d="M13 2 4 14h6l-1 8 9-12h-6z"/>'
+};
+
+const TOOLS = {
+  'word-counter':    { title:'Word Counter',        cat:'text',  icon:I.words,   color:'#5b5bd6', desc:'Words, characters, sentences and reading time — live as you type.' },
+  'case-converter':  { title:'Case Converter',      cat:'text',  icon:I.case,    color:'#8b5cf6', desc:'UPPERCASE, lowercase, Title Case and Sentence case in one click.' },
+  'text-summarizer': { title:'Text Summarizer',     cat:'text',  icon:I.scissors,color:'#d946ef', desc:'Pull the key sentences out of a long reading, offline.' },
+  'pdf-to-text':     { title:'PDF → Text',          cat:'pdf',   icon:I.doc,     color:'#ef6461', desc:'Extract selectable text from a PDF and save it as .txt.' },
+  'image-to-text':   { title:'Image → Text (OCR)',  cat:'pdf',   icon:I.ocr,     color:'#f59e0b', desc:'Turn a photo of a whiteboard or page into editable text.' },
+  'pdf-merge':       { title:'PDF Merge',           cat:'pdf',   icon:I.merge,   color:'#22b8a6', desc:'Combine several PDFs into one file, in your chosen order.' },
+  'pdf-compress':    { title:'PDF Compressor',      cat:'pdf',   icon:I.zip,     color:'#0ea5a0', desc:'Re-save a PDF with optimized streams to shrink the file.' },
+  'image-to-pdf':    { title:'Image → PDF',         cat:'pdf',   icon:I.img,     color:'#3b82f6', desc:'Turn JPG, PNG or WEBP photos into a single tidy PDF.' },
+  'percentage':      { title:'Percentage Calculator',cat:'calc', icon:I.percent, color:'#6366f1', desc:'Percent of, percent change, increase and decrease.' },
+  'gpa':             { title:'GPA Calculator',      cat:'calc',  icon:I.cap,     color:'#e0803a', desc:'Weighted GPA from credits and grades, on four scales.' },
+  'study-timer':     { title:'Study Timer',         cat:'study', icon:I.timer,   color:'#12916d', desc:'Pomodoro focus sessions: 25 minutes on, 5 minutes off.' }
+};
+const CATS = { pdf:'PDF Tools', text:'Writing Tools', calc:'Calculators', study:'Study' };
+const CAT_LABEL = id => CATS[id] || 'Tools';
+
+/* =========================================================================
+   RENDERING HELPERS
+   ========================================================================= */
+function toolCard(id){
+  const t = TOOLS[id];
+  const ico = el('div', {class:'ico', 'aria-hidden':'true',
+    style:`background:linear-gradient(135deg, ${t.color}, ${t.color}cc)`});
+  ico.appendChild(svgIcon(t.icon));
+  return el('a', {class:'card', href:'#/tool/' + id, style:`--c:${t.color}`,
+      'aria-label': t.title},
+    ico,
+    el('h3', {}, t.title),
+    el('p', {}, t.desc),
+    el('span', {class:'tag'}, CAT_LABEL(t.cat))
+  );
+}
+function matches(id, q){
+  const t = TOOLS[id];
+  const ql = q.trim().toLowerCase();
+  if (!ql) return true;
+  const alias = {
+    'pdf-to-text':'convert extract txt reader',
+    'image-to-text':'ocr scan photo picture read handwriting',
+    'word-counter':'essay length count characters',
+    'text-summarizer':'summary shorten tldr notes',
+    'gpa':'grade grades average cgpa marks',
+    'percentage':'percent math calculate discount',
+    'study-timer':'pomodoro focus break clock',
+    'pdf-merge':'combine join',
+    'pdf-compress':'shrink smaller size reduce',
+    'image-to-pdf':'jpg png photo convert',
+    'case-converter':'uppercase lowercase capital title'
+  }[id] || '';
+  return (t.title + ' ' + t.desc + ' ' + id + ' ' + CAT_LABEL(t.cat) + ' ' + alias)
+    .toLowerCase().includes(ql);
+}
+function filterTools(cat, q){
+  return Object.keys(TOOLS).filter(id =>
+    (!cat || TOOLS[id].cat === cat) && matches(id, q || '')
+  );
+}
+function catChips(container, activeCat, onPick){
+  container.innerHTML = '';
+  const counts = {};
+  Object.values(TOOLS).forEach(t => counts[t.cat] = (counts[t.cat]||0)+1);
+  const make = (id, label, n) => {
+    const b = el('button', {type:'button', class:'cat-chip' + (activeCat === id ? ' active' : '')},
+      label, n != null ? el('span', {class:'cnt'}, String(n)) : null);
+    b.addEventListener('click', () => onPick(id));
+    return b;
+  };
+  container.appendChild(make(null, 'All', Object.keys(TOOLS).length));
+  Object.keys(CATS).forEach(c => container.appendChild(make(c, CATS[c], counts[c]||0)));
+}
+
+/* =========================================================================
+   HOME
+   ========================================================================= */
+let homeCat = null;
+function renderPopular(){
+  const ids = ['word-counter','pdf-to-text','gpa','text-summarizer','image-to-text','study-timer'];
+  const g = $('#popularGrid'); g.innerHTML = '';
+  ids.forEach(id => g.appendChild(toolCard(id)));
+}
+function renderHomeGrid(){
+  const q = $('#homeSearch').value || '';
+  const list = filterTools(homeCat, q);
+  const g = $('#allToolsGrid'); g.innerHTML = '';
+  list.forEach(id => g.appendChild(toolCard(id)));
+  $('#homeNoResults').hidden = list.length > 0;
+}
+function renderHeroChips(){
+  const wrap = $('#heroChips'); wrap.innerHTML = '';
+  [['pdf-to-text','PDF → Text'],['gpa','GPA'],['word-counter','Word count'],['study-timer','Pomodoro']]
+    .forEach(([id,label]) => {
+      wrap.appendChild(el('button', {type:'button', onclick:()=>{ location.hash = '#/tool/'+id; }}, label));
+    });
+}
+
+/* =========================================================================
+   TOOLS INDEX
+   ========================================================================= */
+let idxCat = null;
+function renderToolsIndex(){
+  const q = $('#toolsSearch').value || '';
+  const list = filterTools(idxCat, q);
+  const grid = $('#toolsGrid'); grid.innerHTML = '';
+  list.forEach(id => grid.appendChild(toolCard(id)));
+  $('#toolsNoResults').hidden = list.length > 0;
+  const title = idxCat ? CAT_LABEL(idxCat) : 'All Tools';
+  $('#toolsTitle').textContent = title;
+  $('#toolsCrumb').textContent = title;
+  $('#toolsCount').textContent = list.length + (list.length === 1 ? ' tool' : ' tools')
+    + (q.trim() ? ` matching “${q.trim()}”` : '');
+  catChips($('#toolsCats'), idxCat, c => {
+    idxCat = c;
+    const suffix = c ? '?cat=' + c : '';
+    if (location.hash !== '#/tools' + suffix) {
+      history.replaceState(null, '', '#/tools' + suffix);
+    }
+    renderToolsIndex();
+  });
+}
+
+/* =========================================================================
+   ROUTER
+   ========================================================================= */
+function show(viewId){
+  $$('.tool-view').forEach(v => v.classList.toggle('active', v.id === viewId));
+  window.scrollTo(0, 0);
+}
+function route(){
+  cleanupActiveTool();
+  const hash = location.hash || '#/';
+  const m = hash.match(/^#\/([^?]*)(?:\?(.*))?$/);
+  const path = m ? m[1] : '';
+  const params = new URLSearchParams(m && m[2] ? m[2] : '');
+
+  if (!path) { renderHomeGrid(); show('view-home'); return; }
+
+  if (path === 'tools') {
+    idxCat = params.get('cat');
+    if (idxCat && !CATS[idxCat]) idxCat = null;
+    $('#toolsSearch').value = params.get('q') || '';
+    renderToolsIndex();
+    show('view-tools');
+    return;
+  }
+  if (path === 'privacy') { show('view-privacy'); return; }
+  if (path === 'terms')   { show('view-terms');   return; }
+  if (path === 'about')   { show('view-about');   return; }
+  if (path === 'contact') { show('view-contact'); return; }
+  if (path.indexOf('tool/') === 0) { openTool(path.slice(5)); return; }
+
+  renderHomeGrid();
+  show('view-home');
+}
+
+/* =========================================================================
+   TOOL MOUNT
+   ========================================================================= */
+let activeCleanup = null;
+function cleanupActiveTool(){
+  if (typeof activeCleanup === 'function') { try { activeCleanup(); } catch {} }
+  activeCleanup = null;
+}
+const BUILDERS = {
+  'word-counter': buildWordCounter,
+  'case-converter': buildCaseConverter,
+  'text-summarizer': buildSummarizer,
+  'pdf-to-text': buildPdfToText,
+  'image-to-text': buildImageToText,
+  'pdf-merge': buildPdfMerge,
+  'pdf-compress': buildPdfCompress,
+  'image-to-pdf': buildImageToPdf,
+  'percentage': buildPercentage,
+  'gpa': buildGpa,
+  'study-timer': buildStudyTimer
+};
+function openTool(id){
+  const t = TOOLS[id];
+  const build = BUILDERS[id];
+  if (!t || typeof build !== 'function') { location.hash = '#/tools'; return; }
+
+  document.title = t.title + ' — StudyKit';
+  $('#toolCrumb').textContent = t.title;
+  const mount = $('#toolMount');
+  mount.innerHTML = '';
+  const wrap = el('div', {class:'tool'});
+  const ico = el('div', {class:'ico', 'aria-hidden':'true',
+    style:`background:linear-gradient(135deg, ${t.color}, ${t.color}cc)`});
+  ico.appendChild(svgIcon(t.icon));
+  wrap.appendChild(el('div', {class:'tool-head'}, ico,
+    el('div', {}, el('h2', {}, t.title), el('p', {class:'desc'}, t.desc))));
+  const body = el('div');
+  wrap.appendChild(body);
+  mount.appendChild(wrap);
+
+  try { activeCleanup = build(body) || null; }
+  catch (e) {
+    body.appendChild(el('div', {class:'status err'}, 'This tool failed to start: ' + (e.message||'unknown error')));
+  }
+
+  const rel = $('#relatedGrid'); rel.innerHTML = '';
+  Object.keys(TOOLS)
+    .filter(x => x !== id && TOOLS[x].cat === t.cat)
+    .concat(Object.keys(TOOLS).filter(x => x !== id && TOOLS[x].cat !== t.cat))
+    .slice(0, 3)
+    .forEach(x => rel.appendChild(toolCard(x)));
+
+  show('view-tool');
+}
+
+/* ---------- shared dropzone factory ---------- */
+function makeDrop(opts){
+  const input = el('input', {type:'file', accept:opts.accept, hidden:''});
+  if (opts.multiple) input.setAttribute('multiple','');
+  const ico = el('div', {class:'dico', 'aria-hidden':'true'});
+  ico.appendChild(svgIcon(opts.icon || I.up));
+  const drop = el('div', {class:'drop', tabindex:'0', role:'button', 'aria-label':opts.title},
+    ico, el('strong', {}, opts.title), el('span', {}, opts.hint));
+  const open = () => input.click();
+  drop.addEventListener('click', open);
+  drop.addEventListener('keydown', e => { if (e.key==='Enter'||e.key===' '){ e.preventDefault(); open(); } });
+  ['dragenter','dragover'].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.add('hover'); }));
+  ['dragleave','dragend'].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.remove('hover'); }));
+  drop.addEventListener('drop', e => {
+    e.preventDefault(); drop.classList.remove('hover');
+    const files = Array.from((e.dataTransfer && e.dataTransfer.files) || []);
+    if (files.length) opts.onFiles(files);
+  });
+  input.addEventListener('change', () => {
+    const files = Array.from(input.files || []);
+    if (files.length) opts.onFiles(files);
+    input.value = '';
+  });
+  return { node: el('div', {}, drop, input), input, reset(){ input.value=''; } };
+}
+const iconBtn = (label, iconPath, cls, fn) => {
+  const b = el('button', {class:'btn ' + (cls||''), type:'button'});
+  if (iconPath) b.appendChild(svgIcon(iconPath));
+  b.appendChild(document.createTextNode(label));
+  if (fn) b.addEventListener('click', fn);
+  return b;
+};
+
+/* =========================================================================
+   1) WORD COUNTER
+   ========================================================================= */
+function buildWordCounter(root){
+  const ta = el('textarea', {placeholder:'Paste or type your essay, notes or paragraph…', 'aria-label':'Text'});
+  const stats = el('div', {class:'stats'});
+  const nodes = {};
+  [['words','Words'],['chars','Characters'],['nospace','No spaces'],
+   ['sent','Sentences'],['para','Paragraphs'],['read','Reading time']].forEach(([k,label]) => {
+    const n = el('div', {class:'n'}, '0');
+    nodes[k] = n;
+    stats.appendChild(el('div', {class:'stat'}, n, el('div', {class:'l'}, label)));
+  });
+  const status = statusNode(root);
+  const copyBtn = iconBtn('Copy text', I.copy, 'secondary', async () => {
+    if (!ta.value.trim()) return setStatus(status, 'Nothing to copy yet.', 'err');
+    setStatus(status, await copyText(ta.value) ? 'Text copied.' : 'Copy failed — select and copy manually.',
+      'ok');
+  });
+  const dlBtn = iconBtn('Download .txt', I.dl, 'secondary', () => {
+    if (!ta.value.trim()) return setStatus(status, 'Nothing to download yet.', 'err');
+    download(new Blob([ta.value], {type:'text/plain;charset=utf-8'}), 'my-text.txt');
+    setStatus(status, 'Downloaded my-text.txt', 'ok');
+  });
+  const clearBtn = iconBtn('Clear', I.trash, 'danger', () => { ta.value=''; compute(); ta.focus(); setStatus(status,''); });
+
+  root.insertBefore(el('div', {class:'row'}, ta), status);
+  root.insertBefore(el('div', {class:'row'}, copyBtn, dlBtn, clearBtn), status);
+  root.insertBefore(stats, status);
+  root.appendChild(el('div', {class:'note'}, 'Stats update live as you type. Reading time assumes 200 words per minute — about the speed of careful silent reading.'));
+
+  function compute(){
+    const text = ta.value;
+    const trimmed = text.trim();
+    const words = trimmed ? trimmed.split(/\s+/).filter(Boolean).length : 0;
+    const minutes = words / 200;
+    nodes.words.textContent   = words.toLocaleString();
+    nodes.chars.textContent   = text.length.toLocaleString();
+    nodes.nospace.textContent = text.replace(/\s/g,'').length.toLocaleString();
+    nodes.sent.textContent    = countSentences(text).toLocaleString();
+    nodes.para.textContent    = (trimmed ? trimmed.split(/\n\s*\n+/).filter(p => p.trim()).length : 0).toLocaleString();
+    nodes.read.textContent    = words === 0 ? '0 sec'
+      : minutes < 1 ? Math.max(1, Math.round(minutes*60)) + ' sec'
+      : Math.round(minutes) + ' min';
+  }
+  ta.addEventListener('input', compute);
+  compute();
+  setTimeout(()=>ta.focus(), 60);
+}
+
+/* ---- sentence helpers ---- */
+const ABBR = ['Mr','Mrs','Ms','Dr','Prof','Sr','Jr','St','vs','etc','e.g','i.e','a.m','p.m','U.S','U.K'];
+function protect(s){
+  ABBR.forEach(a => {
+    s = s.replace(new RegExp('(^|\\s)' + a.replace(/\./g,'\\.') + '\\.', 'gi'),
+      (mm, p1) => p1 + a.replace(/\./g,'') + '§');
+  });
+  return s.replace(/(\d)\.(\d)/g, '$1§$2');
+}
+function countSentences(text){
+  if (!text || !text.trim()) return 0;
+  const s = protect(text);
+  return s.split(/[.!?]+(?=\s|$)/).map(p => p.trim()).filter(p => /[a-z0-9\u0400-\u04ff\u0600-\u06ff]/i.test(p)).length;
+}
+function splitSentences(text){
+  if (!text || !text.trim()) return [];
+  let s = protect(text.replace(/\s+/g,' ').trim());
+  return s.split(/(?<=[.!?])\s+/)
+          .map(p => p.replace(/§/g,'.').trim())
+          .filter(p => p.length > 0);
+}
+
+/* =========================================================================
+   2) CASE CONVERTER
+   ========================================================================= */
+function buildCaseConverter(root){
+  const ta = el('textarea', {placeholder:'Type or paste text…', 'aria-label':'Text'});
+  const status = statusNode(root);
+  const apply = (fn) => () => {
+    if (!ta.value.trim()) return setStatus(status, 'Type some text first.', 'err');
+    ta.value = fn(ta.value);
+    setStatus(status, 'Done.', 'ok');
+  };
+  const SMALL = new Set(['a','an','the','and','or','but','of','to','in','on','for','with','at','by','from','as','vs','nor']);
+  const buttons = el('div', {class:'row'},
+    iconBtn('UPPERCASE', null, 'secondary', apply(t => t.toUpperCase())),
+    iconBtn('lowercase', null, 'secondary', apply(t => t.toLowerCase())),
+    iconBtn('Title Case', null, 'secondary', apply(t =>
+      t.toLowerCase().replace(/[^\s]+/g, (w, i) =>
+        (i !== 0 && SMALL.has(w.replace(/[^a-z]/g,''))) ? w : w.replace(/[a-z]/, c => c.toUpperCase())))),
+    iconBtn('Sentence case', null, 'secondary', apply(t =>
+      t.toLowerCase().replace(/(^\s*[a-z]|[.!?]\s+[a-z])/g, c => c.toUpperCase()))),
+    iconBtn('aLtErNaTiNg', null, 'secondary', apply(t =>
+      t.split('').map((c,i) => i%2 ? c.toLowerCase() : c.toUpperCase()).join(''))),
+    iconBtn('Trim spaces', null, 'secondary', apply(t => t.replace(/[ \t]+/g,' ').replace(/ ?\n ?/g,'\n').trim()))
+  );
+  const copyBtn = iconBtn('Copy', I.copy, '', async () => {
+    if (!ta.value.trim()) return setStatus(status, 'Nothing to copy.', 'err');
+    setStatus(status, await copyText(ta.value) ? 'Copied to clipboard.' : 'Copy failed.', 'ok');
+  });
+  const clearBtn = iconBtn('Clear', I.trash, 'danger', () => { ta.value=''; ta.focus(); setStatus(status,''); });
+
+  root.insertBefore(el('div', {class:'row'}, ta), status);
+  root.insertBefore(buttons, status);
+  root.insertBefore(el('div', {class:'row'}, copyBtn, clearBtn), status);
+  root.appendChild(el('div', {class:'note'}, 'Title Case keeps short joining words (a, the, of…) lowercase unless they start the line — the style most citation guides expect.'));
+}
+
+/* =========================================================================
+   3) TEXT SUMMARIZER
+   ========================================================================= */
+function buildSummarizer(root){
+  const ta = el('textarea', {placeholder:'Paste a paragraph, article or chapter…', 'aria-label':'Text to summarize'});
+  const lenSel = el('select', {id:'sum-len', 'aria-label':'Summary length'},
+    el('option', {value:'short'}, 'Short (~25%)'),
+    el('option', {value:'medium', selected:'selected'}, 'Medium (~40%)'),
+    el('option', {value:'detailed'}, 'Detailed (~60%)')
+  );
+  const out = el('textarea', {readonly:'readonly', placeholder:'Your summary will appear here…', 'aria-label':'Summary'});
+  const status = statusNode(root);
+  const runBtn = iconBtn('Summarize', I.bolt, '', run);
+  const copyBtn = iconBtn('Copy', I.copy, 'secondary', async () => {
+    if (!out.value) return setStatus(status, 'Run Summarize first.', 'err');
+    setStatus(status, await copyText(out.value) ? 'Summary copied.' : 'Copy failed.', 'ok');
+  });
+  const clearBtn = iconBtn('Clear', I.trash, 'danger', () => {
+    ta.value=''; out.value=''; setStatus(status,''); ta.focus();
+  });
+
+  root.insertBefore(el('div', {class:'row'}, ta), status);
+  root.insertBefore(el('div', {class:'row'},
+    el('div', {class:'field-wrap'}, el('label', {class:'field', for:'sum-len'}, 'Summary length'), lenSel),
+    runBtn, copyBtn, clearBtn), status);
+  root.insertBefore(el('div', {class:'row'}, out), status);
+  root.appendChild(el('div', {class:'note'}, 'This is an extractive summarizer: it scores and keeps the most representative original sentences rather than rewriting them. Nothing is sent anywhere.'));
+
+  function run(){
+    const text = ta.value.trim();
+    if (!text) return setStatus(status, 'Paste some text first.', 'err');
+    const sents = splitSentences(text);
+    const wordCount = text.split(/\s+/).filter(Boolean).length;
+    if (sents.length < 3 || wordCount < 40) {
+      return setStatus(status, 'Add more text — at least three sentences (about 40 words) so there is something to condense.', 'err');
+    }
+    const ratio = {short:.25, medium:.4, detailed:.6}[lenSel.value];
+    let n = Math.max(1, Math.round(sents.length * ratio));
+    if (n >= sents.length) n = sents.length - 1;
+    const picked = extractiveSummary(sents, n);
+    out.value = picked.join(' ');
+    const pct = Math.round((1 - picked.length / sents.length) * 100);
+    setStatus(status, `Kept ${picked.length} of ${sents.length} sentences — ${pct}% shorter.`, 'ok');
+  }
+}
+function extractiveSummary(sentences, n){
+  const stop = new Set(('a an the and or but if then so of to in on for with as at by from is are was were be been being ' +
+    'this that these those it its i you he she they we our your their his her him them us me my mine own same not no ' +
+    'do does did have has had will would can could should there here what which who when where why how').split(' '));
+  const freq = Object.create(null);
+  const wordsPer = sentences.map(s =>
+    s.toLowerCase().replace(/[^a-z0-9\s]/g,' ').split(/\s+/).filter(w => w.length > 2 && !stop.has(w))
+  );
+  wordsPer.forEach(ws => ws.forEach(w => freq[w] = (freq[w]||0)+1));
+  let max = 1;
+  for (const w in freq) if (freq[w] > max) max = freq[w];
+  const scored = sentences.map((s, i) => {
+    const ws = wordsPer[i];
+    if (!ws.length) return {i, s, score:0};
+    const base = ws.reduce((a,w) => a + freq[w]/max, 0) / Math.sqrt(ws.length);
+    const posBoost = i === 0 ? 1.25 : (i === 1 ? 1.1 : (i === sentences.length - 1 ? 1.05 : 1));
+    return {i, s, score: base * posBoost};
+  });
+  scored.sort((a,b) => b.score - a.score);
+  return scored.slice(0, n).sort((a,b) => a.i - b.i).map(x => x.s);
+}
+
+/* =========================================================================
+   4) PDF → TEXT
+   ========================================================================= */
+function buildPdfToText(root){
+  const preview = el('textarea', {placeholder:'Extracted text will appear here — you can edit it before downloading.', 'aria-label':'Extracted text'});
+  const status = statusNode(root);
+  const bar = el('div', {class:'progress'}, el('i'));
+  const dz = makeDrop({
+    accept:'application/pdf,.pdf', icon:I.doc,
+    title:'Drop your PDF here', hint:'or click to choose a file (stays on your device)',
+    onFiles: files => handleFile(files[0])
+  });
+  const copyBtn = iconBtn('Copy text', I.copy, 'secondary', async () => {
+    if (!preview.value) return setStatus(status, 'Extract a PDF first.', 'err');
+    setStatus(status, await copyText(preview.value) ? 'Text copied.' : 'Copy failed.', 'ok');
+  });
+  const dlBtn = iconBtn('Download .txt', I.dl, '', () => {
+    if (!preview.value) return setStatus(status, 'Nothing to download yet.', 'err');
+    download(new Blob([preview.value], {type:'text/plain;charset=utf-8'}), 'converted-text.txt');
+    setStatus(status, 'Downloaded converted-text.txt', 'ok');
+  });
+  const clearBtn = iconBtn('Clear', I.trash, 'danger', () => {
+    preview.value=''; dz.reset(); setStatus(status,''); bar.classList.remove('on');
+  });
+
+  root.insertBefore(dz.node, status);
+  root.insertBefore(bar, status);
+  root.insertBefore(el('div', {class:'row', style:'margin-top:14px'}, preview), status);
+  root.insertBefore(el('div', {class:'row'}, dlBtn, copyBtn, clearBtn), status);
+  root.appendChild(el('div', {class:'note'}, 'Works on PDFs that contain real text. If the PDF is a scan or photo, no text layer exists — use Image → Text (OCR) instead.'));
+
+  async function handleFile(file){
+    preview.value = '';
+    if (!file) return;
+    if (file.type !== 'application/pdf' && !/\.pdf$/i.test(file.name)) {
+      return setStatus(status, 'That is not a PDF. Please choose a .pdf file.', 'err');
+    }
+    setStatus(status, 'Loading the PDF engine…', 'info');
+    bar.classList.add('on'); bar.firstChild.style.width = '5%';
+    let pdfjs;
+    try { pdfjs = await ensurePdfJs(); }
+    catch { bar.classList.remove('on'); return setStatus(status, 'Could not load the PDF engine. Check your connection and try again.', 'err'); }
+
+    let buf;
+    try { buf = await file.arrayBuffer(); }
+    catch { bar.classList.remove('on'); return setStatus(status, 'Could not read that file — it may be locked or damaged.', 'err'); }
+
+    let pdf;
+    try { pdf = await pdfjs.getDocument({data: new Uint8Array(buf)}).promise; }
+    catch { bar.classList.remove('on'); return setStatus(status, 'Unable to open this PDF. It may be corrupted or password-protected.', 'err'); }
+
+    let text = '';
+    try {
+      for (let p = 1; p <= pdf.numPages; p++){
+        const page = await pdf.getPage(p);
+        const content = await page.getTextContent();
+        text += content.items.map(it => it.str).join(' ').replace(/\s+/g,' ').trim() + '\n\n';
+        bar.firstChild.style.width = Math.round(p / pdf.numPages * 100) + '%';
+        setStatus(status, `Reading page ${p} of ${pdf.numPages}…`, 'info');
+      }
+    } catch (e) {
+      bar.classList.remove('on');
+      return setStatus(status, 'Failed while reading pages: ' + (e.message || 'unknown error'), 'err');
+    }
+    bar.classList.remove('on');
+    text = text.trim();
+    if (text.length < 3) {
+      return setStatus(status, 'No text layer found — this PDF is made of scanned images. Try the Image → Text (OCR) tool.', 'err');
+    }
+    preview.value = text;
+    setStatus(status, `Extracted ${text.length.toLocaleString()} characters from ${pdf.numPages} page(s).`, 'ok');
+  }
+}
+
+/* =========================================================================
+   5) IMAGE → TEXT (OCR)
+   ========================================================================= */
+function buildImageToText(root){
+  const previewWrap = el('div', {class:'img-grid'});
+  const out = el('textarea', {placeholder:'Extracted text will appear here — you can edit it before downloading.', 'aria-label':'Extracted text'});
+  const status = statusNode(root);
+  const bar = el('div', {class:'progress'}, el('i'));
+  const langSel = el('select', {id:'ocr-lang', 'aria-label':'OCR language'},
+    el('option', {value:'eng'}, 'English'),
+    el('option', {value:'spa'}, 'Spanish'),
+    el('option', {value:'fra'}, 'French'),
+    el('option', {value:'deu'}, 'German'),
+    el('option', {value:'ara'}, 'Arabic'),
+    el('option', {value:'tur'}, 'Turkish')
+  );
+  let currentFile = null, currentUrl = null;
+
+  const dz = makeDrop({
+    accept:'image/jpeg,image/png,image/webp,.jpg,.jpeg,.png,.webp', icon:I.img,
+    title:'Upload an image containing text', hint:'JPG, PNG or WEBP — click or drop here',
+    onFiles: files => setFile(files[0])
+  });
+  const runBtn = iconBtn('Extract text', I.bolt, '', run);
+  const copyBtn = iconBtn('Copy', I.copy, 'secondary', async () => {
+    if (!out.value) return setStatus(status, 'Nothing to copy yet.', 'err');
+    setStatus(status, await copyText(out.value) ? 'Text copied.' : 'Copy failed.', 'ok');
+  });
+  const dlBtn = iconBtn('Download .txt', I.dl, 'secondary', () => {
+    if (!out.value) return setStatus(status, 'Nothing to download yet.', 'err');
+    download(new Blob([out.value], {type:'text/plain;charset=utf-8'}), 'ocr-text.txt');
+    setStatus(status, 'Downloaded ocr-text.txt', 'ok');
+  });
+  const clearBtn = iconBtn('Clear', I.trash, 'danger', () => {
+    if (currentUrl) URL.revokeObjectURL(currentUrl);
+    currentFile = null; currentUrl = null;
+    previewWrap.innerHTML=''; out.value=''; dz.reset(); setStatus(status,''); bar.classList.remove('on');
+  });
+
+  root.insertBefore(dz.node, status);
+  root.insertBefore(el('div', {class:'row', style:'margin-top:14px'},
+    el('div', {class:'field-wrap'}, el('label', {class:'field', for:'ocr-lang'}, 'Language of the text'), langSel),
+    runBtn, copyBtn, dlBtn, clearBtn), status);
+  root.insertBefore(bar, status);
+  root.insertBefore(previewWrap, status);
+  root.insertBefore(el('div', {class:'row', style:'margin-top:14px'}, out), status);
+  root.appendChild(el('div', {class:'note'}, 'Recognition runs in your browser. The first run for each language downloads a small model file, so it needs a connection — after that it is cached. Sharp, straight, high-contrast photos give by far the best results.'));
+
+  function setFile(file){
+    if (!file) return;
+    if (!/^image\/(jpeg|png|webp)$/.test(file.type) && !/\.(jpe?g|png|webp)$/i.test(file.name)) {
+      return setStatus(status, 'Please upload a JPG, PNG or WEBP image.', 'err');
+    }
+    if (currentUrl) URL.revokeObjectURL(currentUrl);
+    currentFile = file;
+    currentUrl = URL.createObjectURL(file);
+    previewWrap.innerHTML = '';
+    previewWrap.appendChild(el('figure', {},
+      el('img', {alt:file.name, src:currentUrl}),
+      el('figcaption', {}, file.name)));
+    out.value = '';
+    setStatus(status, 'Image loaded — press “Extract text”.', 'info');
+  }
+
+  async function run(){
+    if (!currentFile) return setStatus(status, 'Upload an image first.', 'err');
+    runBtn.disabled = true;
+    bar.classList.add('on'); bar.firstChild.style.width = '3%';
+    setStatus(status, 'Preparing the OCR engine…', 'info');
+    try {
+      const T = await ensureTesseract();
+      const { data } = await T.recognize(currentFile, langSel.value, {
+        logger: m => {
+          const pct = Math.round((m.progress || 0) * 100);
+          if (m.status === 'recognizing text') {
+            bar.firstChild.style.width = pct + '%';
+            setStatus(status, `Reading the image… ${pct}%`, 'info');
+          } else if (m.status) {
+            setStatus(status, m.status.replace(/^\w/, c => c.toUpperCase()) + '…', 'info');
+          }
+        }
+      });
+      const text = (data && data.text || '').trim();
+      if (!text) {
+        setStatus(status, 'No readable text found. Try a sharper, straighter photo with more contrast, or a different language.', 'err');
+      } else {
+        out.value = text;
+        setStatus(status, `Extracted ${text.length.toLocaleString()} characters.`, 'ok');
+      }
+    } catch (e) {
+      setStatus(status, 'OCR could not run: ' + (e.message || 'unknown error') + '. This usually means the language model could not be downloaded — check your connection and try again.', 'err');
+    } finally {
+      runBtn.disabled = false;
+      bar.classList.remove('on');
+    }
+  }
+
+  return () => { if (currentUrl) URL.revokeObjectURL(currentUrl); };
+}
+
+/* =========================================================================
+   6) PDF MERGE
+   ========================================================================= */
+function buildPdfMerge(root){
+  const list = el('ul', {class:'file-list'});
+  const status = statusNode(root);
+  let files = [];
+
+  const dz = makeDrop({
+    accept:'application/pdf,.pdf', multiple:true, icon:I.merge,
+    title:'Drop your PDF files here', hint:'or click to choose several PDFs at once',
+    onFiles: addFiles
+  });
+  const mergeBtn = iconBtn('Merge & download', I.dl, '', merge);
+  const clearBtn = iconBtn('Clear', I.trash, 'danger', () => {
+    files = []; render(); dz.reset(); setStatus(status,'');
+  });
+
+  root.insertBefore(dz.node, status);
+  root.insertBefore(el('div', {class:'row', style:'margin-top:14px'}, mergeBtn, clearBtn), status);
+  root.insertBefore(list, status);
+  root.appendChild(el('div', {class:'note'}, 'Pages are copied in the order shown below — use the arrows to rearrange. Output file: merged-document.pdf'));
+
+  function addFiles(arr){
+    const pdfs = arr.filter(f => f.type === 'application/pdf' || /\.pdf$/i.test(f.name));
+    if (!pdfs.length) return setStatus(status, 'Those were not PDFs. Please choose .pdf files.', 'err');
+    files = files.concat(pdfs);
+    render();
+    const skipped = arr.length - pdfs.length;
+    setStatus(status, `${files.length} PDF(s) ready.` + (skipped ? ` ${skipped} non-PDF file(s) ignored.` : ''), 'info');
+  }
+  function render(){
+    list.innerHTML = '';
+    files.forEach((f, i) => {
+      const fico = el('span', {class:'fico'}); fico.appendChild(svgIcon(I.doc));
+      list.appendChild(el('li', {},
+        fico,
+        el('span', {class:'name', title:f.name}, f.name),
+        el('span', {class:'sz'}, fmtBytes(f.size)),
+        el('button', {class:'mini', type:'button', title:'Move up', 'aria-label':'Move up',
+          onclick: () => { if (i>0){ [files[i-1],files[i]]=[files[i],files[i-1]]; render(); } }}, '↑'),
+        el('button', {class:'mini', type:'button', title:'Move down', 'aria-label':'Move down',
+          onclick: () => { if (i<files.length-1){ [files[i+1],files[i]]=[files[i],files[i+1]]; render(); } }}, '↓'),
+        el('button', {class:'mini rm', type:'button', title:'Remove', 'aria-label':'Remove',
+          onclick: () => { files.splice(i,1); render(); }}, '✕')
+      ));
+    });
+    mergeBtn.disabled = files.length < 2;
+  }
+  async function merge(){
+    if (files.length < 2) return setStatus(status, 'Choose at least two PDFs to merge.', 'err');
+    mergeBtn.disabled = true;
+    setStatus(status, 'Merging…', 'info');
+    try {
+      const { PDFDocument } = await ensurePdfLib();
+      const out = await PDFDocument.create();
+      let pageCount = 0;
+      for (const f of files){
+        const buf = await f.arrayBuffer();
+        let src;
+        try { src = await PDFDocument.load(buf, {ignoreEncryption:true}); }
+        catch { throw new Error(`Could not read “${f.name}” — it may be corrupted or password-protected.`); }
+        const pages = await out.copyPages(src, src.getPageIndices());
+        pages.forEach(p => { out.addPage(p); pageCount++; });
+      }
+      const bytes = await out.save();
+      download(new Blob([bytes], {type:'application/pdf'}), 'merged-document.pdf');
+      setStatus(status, `Merged ${files.length} files (${pageCount} pages) → merged-document.pdf`, 'ok');
+    } catch (e) {
+      setStatus(status, e.message || 'Merge failed.', 'err');
+    } finally {
+      mergeBtn.disabled = files.length < 2;
+    }
+  }
+  render();
+}
+
+/* =========================================================================
+   7) PDF COMPRESSOR
+   ========================================================================= */
+function buildPdfCompress(root){
+  const stats = el('div', {class:'stats'});
+  const mk = label => { const n = el('div', {class:'n'}, '—');
+    stats.appendChild(el('div', {class:'stat'}, n, el('div', {class:'l'}, label))); return n; };
+  const nOrig = mk('Original'), nNew = mk('Compressed'), nSaved = mk('Saved');
+  const status = statusNode(root);
+  let current = null;
+
+  const dz = makeDrop({
+    accept:'application/pdf,.pdf', icon:I.zip,
+    title:'Drop your PDF here', hint:'or click to choose a file',
+    onFiles: files => setFile(files[0])
+  });
+  const runBtn = iconBtn('Compress & download', I.dl, '', run);
+  const clearBtn = iconBtn('Clear', I.trash, 'danger', () => {
+    current = null; dz.reset();
+    nOrig.textContent = nNew.textContent = nSaved.textContent = '—';
+    setStatus(status,'');
+  });
+
+  root.insertBefore(dz.node, status);
+  root.insertBefore(el('div', {class:'row', style:'margin-top:14px'}, runBtn, clearBtn), status);
+  root.insertBefore(stats, status);
+  root.appendChild(el('div', {class:'note'}, 'Honest about what this does: the PDF is rebuilt with optimized object streams and its metadata is stripped. Embedded images are not re-encoded, because doing that reliably in a browser would damage quality — so real savings are usually 0–15%, and close to zero for scanned documents that are already compressed images.'));
+
+  function setFile(f){
+    if (!f) return;
+    if (f.type !== 'application/pdf' && !/\.pdf$/i.test(f.name)) {
+      return setStatus(status, 'Please choose a .pdf file.', 'err');
+    }
+    current = f;
+    nOrig.textContent = fmtBytes(f.size);
+    nNew.textContent = '—'; nSaved.textContent = '—';
+    setStatus(status, `Loaded “${f.name}”. Press Compress to process it.`, 'info');
+  }
+  async function run(){
+    if (!current) return setStatus(status, 'Choose a PDF first.', 'err');
+    runBtn.disabled = true;
+    setStatus(status, 'Compressing…', 'info');
+    try {
+      const { PDFDocument } = await ensurePdfLib();
+      const buf = await current.arrayBuffer();
+      const doc = await PDFDocument.load(buf, {ignoreEncryption:true, updateMetadata:false});
+      doc.setTitle(''); doc.setAuthor(''); doc.setSubject('');
+      doc.setKeywords([]); doc.setProducer('StudyKit'); doc.setCreator('StudyKit');
+      const bytes = await doc.save({ useObjectStreams:true, addDefaultPage:false });
+      const blob = new Blob([bytes], {type:'application/pdf'});
+      const saved = current.size - blob.size;
+      const pct = current.size ? (saved / current.size) * 100 : 0;
+      nNew.textContent = fmtBytes(blob.size);
+      nSaved.textContent = (saved > 0 ? pct.toFixed(1) : '0.0') + '%';
+      download(blob, 'compressed.pdf');
+      if (saved > 0) setStatus(status, `Done — saved ${fmtBytes(saved)} (${pct.toFixed(1)}%). Downloaded compressed.pdf`, 'ok');
+      else setStatus(status, 'This PDF was already optimized, so no size was saved. A clean re-saved copy was downloaded anyway.', 'info');
+    } catch (e) {
+      setStatus(status, 'Compression failed: ' + (e.message || 'unknown error') + '. The file may be password-protected or corrupted.', 'err');
+    } finally {
+      runBtn.disabled = false;
+    }
+  }
+}
+
+/* =========================================================================
+   8) IMAGE → PDF
+   ========================================================================= */
+function buildImageToPdf(root){
+  const grid = el('div', {class:'img-grid'});
+  const status = statusNode(root);
+  let imgs = [];
+
+  const sizeSel = el('select', {id:'i2p-size', 'aria-label':'Page size'},
+    el('option', {value:'fit'}, 'Fit page to each image'),
+    el('option', {value:'a4'}, 'A4 portrait (centered)'),
+    el('option', {value:'letter'}, 'US Letter (centered)')
+  );
+  const dz = makeDrop({
+    accept:'image/jpeg,image/png,image/webp,.jpg,.jpeg,.png,.webp', multiple:true, icon:I.img,
+    title:'Drop your images here', hint:'JPG, PNG or WEBP — several at once is fine',
+    onFiles: addFiles
+  });
+  const runBtn = iconBtn('Create PDF', I.dl, '', run);
+  const clearBtn = iconBtn('Clear', I.trash, 'danger', () => {
+    imgs.forEach(i => URL.revokeObjectURL(i.url));
+    imgs = []; render(); dz.reset(); setStatus(status,'');
+  });
+
+  root.insertBefore(dz.node, status);
+  root.insertBefore(el('div', {class:'row', style:'margin-top:14px'},
+    el('div', {class:'field-wrap'}, el('label', {class:'field', for:'i2p-size'}, 'Page size'), sizeSel),
+    runBtn, clearBtn), status);
+  root.insertBefore(grid, status);
+  root.appendChild(el('div', {class:'note'}, 'Images become pages in the order shown — use ← → to reorder. Output file: images.pdf'));
+
+  function addFiles(arr){
+    const ok = arr.filter(f => /^image\/(jpeg|png|webp)$/.test(f.type) || /\.(jpe?g|png|webp)$/i.test(f.name));
+    if (!ok.length) return setStatus(status, 'Please upload JPG, PNG or WEBP images.', 'err');
+    ok.forEach(f => imgs.push({file:f, url:URL.createObjectURL(f)}));
+    render();
+    setStatus(status, `${imgs.length} image(s) ready.`, 'info');
+  }
+  function render(){
+    grid.innerHTML = '';
+    imgs.forEach((it, i) => {
+      grid.appendChild(el('figure', {},
+        el('img', {alt:it.file.name, src:it.url}),
+        el('figcaption', {title:it.file.name}, (i+1) + '. ' + it.file.name),
+        el('div', {class:'ctrls'},
+          el('button', {type:'button', title:'Move left', 'aria-label':'Move left',
+            onclick: () => { if (i>0){ [imgs[i-1],imgs[i]]=[imgs[i],imgs[i-1]]; render(); } }}, '←'),
+          el('button', {type:'button', title:'Move right', 'aria-label':'Move right',
+            onclick: () => { if (i<imgs.length-1){ [imgs[i+1],imgs[i]]=[imgs[i],imgs[i+1]]; render(); } }}, '→'),
+          el('button', {type:'button', title:'Remove', 'aria-label':'Remove',
+            onclick: () => { URL.revokeObjectURL(it.url); imgs.splice(i,1); render(); }}, '✕')
+        )));
+    });
+    runBtn.disabled = imgs.length === 0;
+  }
+  async function toPngBuffer(file){
+    const bmp = await createImageBitmap(file);
+    const c = document.createElement('canvas');
+    c.width = bmp.width; c.height = bmp.height;
+    c.getContext('2d').drawImage(bmp, 0, 0);
+    bmp.close && bmp.close();
+    const blob = await new Promise(res => c.toBlob(res, 'image/png'));
+    if (!blob) throw new Error('could not convert that image');
+    return await blob.arrayBuffer();
+  }
+  async function run(){
+    if (!imgs.length) return setStatus(status, 'Add at least one image.', 'err');
+    runBtn.disabled = true;
+    setStatus(status, 'Building the PDF…', 'info');
+    try {
+      const { PDFDocument } = await ensurePdfLib();
+      const doc = await PDFDocument.create();
+      const PAGES = { a4:[595.28, 841.89], letter:[612, 792] };
+      for (let i = 0; i < imgs.length; i++){
+        const it = imgs[i];
+        setStatus(status, `Adding image ${i+1} of ${imgs.length}…`, 'info');
+        let embedded;
+        const isPng = it.file.type === 'image/png' || /\.png$/i.test(it.file.name);
+        const isJpg = it.file.type === 'image/jpeg' || /\.jpe?g$/i.test(it.file.name);
+        try {
+          if (isPng)      embedded = await doc.embedPng(await it.file.arrayBuffer());
+          else if (isJpg) embedded = await doc.embedJpg(await it.file.arrayBuffer());
+          else            embedded = await doc.embedPng(await toPngBuffer(it.file));
+        } catch {
+          embedded = await doc.embedPng(await toPngBuffer(it.file));
+        }
+        const mode = sizeSel.value;
+        if (mode === 'fit') {
+          const page = doc.addPage([embedded.width, embedded.height]);
+          page.drawImage(embedded, {x:0, y:0, width:embedded.width, height:embedded.height});
+        } else {
+          const [pw, ph] = PAGES[mode];
+          const page = doc.addPage([pw, ph]);
+          const margin = 28;
+          const scale = Math.min((pw - margin*2) / embedded.width, (ph - margin*2) / embedded.height);
+          const w = embedded.width * scale, h = embedded.height * scale;
+          page.drawImage(embedded, {x:(pw-w)/2, y:(ph-h)/2, width:w, height:h});
+        }
+      }
+      const bytes = await doc.save();
+      download(new Blob([bytes], {type:'application/pdf'}), 'images.pdf');
+      setStatus(status, `Created a PDF with ${imgs.length} page(s) → images.pdf`, 'ok');
+    } catch (e) {
+      setStatus(status, 'Could not build the PDF: ' + (e.message || 'unknown error') + '.', 'err');
+    } finally {
+      runBtn.disabled = imgs.length === 0;
+    }
+  }
+  render();
+  return () => imgs.forEach(i => URL.revokeObjectURL(i.url));
+}
+
+/* =========================================================================
+   9) PERCENTAGE CALCULATOR
+   ========================================================================= */
+function buildPercentage(root){
+  const safe = v => { const n = parseFloat(v); return Number.isFinite(n) ? n : null; };
+  const fmt = n => {
+    if (!Number.isFinite(n)) return '—';
+    if (Number.isInteger(n)) return n.toLocaleString();
+    return parseFloat(n.toFixed(4)).toLocaleString();
+  };
+  const field = (label, ph) => {
+    const inp = el('input', {type:'number', step:'any', placeholder: ph || '0'});
+    const wrap = el('div', {class:'field-wrap'}, el('label', {class:'field'}, label), inp);
+    return {wrap, inp};
+  };
+  const block = (heading, aLabel, bLabel, buttons, compute) => {
+    const a = field(aLabel), b = field(bLabel);
+    const res = el('div', {class:'status'});
+    const btns = buttons.map(([label, cls, dir]) =>
+      iconBtn(label, null, cls, () => compute(a.inp, b.inp, res, dir)));
+    [a.inp, b.inp].forEach(i => i.addEventListener('keydown', e => {
+      if (e.key === 'Enter') compute(a.inp, b.inp, res, buttons[0][2]);
+    }));
+    return el('div', {style:'margin-bottom:22px'},
+      el('h3', {style:'margin:0 0 10px;font-size:1.05rem'}, heading),
+      el('div', {class:'row'}, a.wrap, b.wrap, ...btns),
+      res);
+  };
+
+  root.appendChild(block('What is X% of Y?', 'Percent (%)', 'Of value', [['Calculate','','']],
+    (a,b,res) => {
+      const x = safe(a.value), y = safe(b.value);
+      if (x === null || y === null) { res.className='status err'; res.textContent='Fill in both fields with numbers.'; return; }
+      res.className='status ok'; res.textContent = `${fmt(x)}% of ${fmt(y)} = ${fmt(x*y/100)}`;
+    }));
+
+  root.appendChild(block('X is what percentage of Y?', 'Value X', 'Value Y', [['Calculate','','']],
+    (a,b,res) => {
+      const x = safe(a.value), y = safe(b.value);
+      if (x === null || y === null) { res.className='status err'; res.textContent='Fill in both fields with numbers.'; return; }
+      if (y === 0) { res.className='status err'; res.textContent='Y cannot be zero — that would divide by zero.'; return; }
+      res.className='status ok'; res.textContent = `${fmt(x)} is ${fmt(x/y*100)}% of ${fmt(y)}`;
+    }));
+
+  root.appendChild(block('Percentage increase or decrease', 'From', 'To', [['Calculate change','','']],
+    (a,b,res) => {
+      const x = safe(a.value), y = safe(b.value);
+      if (x === null || y === null) { res.className='status err'; res.textContent='Fill in both fields with numbers.'; return; }
+      if (x === 0) { res.className='status err'; res.textContent='The starting value cannot be zero.'; return; }
+      const pct = (y - x) / Math.abs(x) * 100;
+      res.className='status ok';
+      res.textContent = pct === 0
+        ? `${fmt(x)} → ${fmt(y)} is no change.`
+        : `${fmt(x)} → ${fmt(y)} is a ${fmt(Math.abs(pct))}% ${pct > 0 ? 'increase' : 'decrease'}.`;
+    }));
+
+  root.appendChild(block('Your score as a grade', 'Marks scored', 'Total marks', [['Get percentage','','']],
+    (a,b,res) => {
+      const x = safe(a.value), y = safe(b.value);
+      if (x === null || y === null) { res.className='status err'; res.textContent='Fill in both fields with numbers.'; return; }
+      if (y <= 0) { res.className='status err'; res.textContent='Total marks must be greater than zero.'; return; }
+      const p = x / y * 100;
+      res.className='status ok';
+      res.textContent = `${fmt(x)} / ${fmt(y)} = ${fmt(p)}%` + (p > 100 ? ' (above the maximum — bonus marks?)' : '');
+    }));
+
+  root.appendChild(el('div', {class:'note'}, 'Empty fields and division by zero are caught before any maths runs, so you will never see NaN or Infinity here. Press Enter in any field to calculate.'));
+}
+
+/* =========================================================================
+   10) GPA CALCULATOR
+   ========================================================================= */
+const GRADE_SCALES = {
+  '4.0 (US standard)': { 'A+':4.0,'A':4.0,'A-':3.7,'B+':3.3,'B':3.0,'B-':2.7,'C+':2.3,'C':2.0,'C-':1.7,'D+':1.3,'D':1.0,'D-':0.7,'F':0.0 },
+  '4.3 (Canada)':      { 'A+':4.3,'A':4.0,'A-':3.7,'B+':3.3,'B':3.0,'B-':2.7,'C+':2.3,'C':2.0,'C-':1.7,'D':1.0,'F':0.0 },
+  '5.0 scale':         { 'A+':5.0,'A':4.5,'B+':4.0,'B':3.5,'C+':3.0,'C':2.5,'D':2.0,'F':0.0 },
+  '10-point (India)':  { 'O':10,'A+':9,'A':8,'B+':7,'B':6,'C':5,'D':4,'F':0 }
+};
+function buildGpa(root){
+  const scaleSel = el('select', {id:'gpa-scale', 'aria-label':'Grading scale'});
+  Object.keys(GRADE_SCALES).forEach(k => scaleSel.appendChild(el('option', {value:k}, k)));
+
+  const tbody = el('tbody');
+  const table = el('table', {class:'gpa-table'},
+    el('thead', {}, el('tr', {},
+      el('th', {style:'min-width:150px'}, 'Subject'),
+      el('th', {style:'width:110px'}, 'Credits'),
+      el('th', {style:'width:120px'}, 'Grade'),
+      el('th', {style:'width:60px'}, ''))),
+    tbody);
+  const result = el('div', {class:'gpa-result'},
+    el('div', {class:'big'}, '—'),
+    el('div', {class:'sub'}, ''));
+  const status = statusNode(root);
+
+  const gradeOptions = () => Object.keys(GRADE_SCALES[scaleSel.value]);
+  function addRow(name, credits){
+    const sel = el('select', {'aria-label':'Grade'});
+    gradeOptions().forEach(g => sel.appendChild(el('option', {value:g}, g)));
+    const tr = el('tr', {},
+      el('td', {}, el('input', {type:'text', placeholder:'e.g. Calculus', value:name || ''})),
+      el('td', {}, el('input', {type:'number', min:'0', step:'0.5', placeholder:'3', value:credits || ''})),
+      el('td', {}, sel),
+      el('td', {}, el('button', {class:'mini rm', type:'button', title:'Remove row', 'aria-label':'Remove row',
+        onclick: () => { tr.remove(); if (!tbody.children.length) addRow(); }}, '✕')));
+    tbody.appendChild(tr);
+    return tr;
+  }
+  scaleSel.addEventListener('change', () => {
+    $$('tr', tbody).forEach(tr => {
+      const sel = $('select', tr);
+      const cur = sel.value;
+      sel.innerHTML = '';
+      gradeOptions().forEach(g => sel.appendChild(el('option', {value:g}, g)));
+      if (gradeOptions().indexOf(cur) !== -1) sel.value = cur;
+    });
+    result.classList.remove('on');
+  });
+
+  const addBtn = iconBtn('+ Add subject', null, 'secondary', () => addRow());
+  const calcBtn = iconBtn('Calculate GPA', I.bolt, '', calc);
+  const clearBtn = iconBtn('Reset', I.trash, 'danger', () => {
+    tbody.innerHTML = ''; addRow(); addRow(); addRow();
+    result.classList.remove('on'); setStatus(status,'');
+  });
+
+  root.insertBefore(el('div', {class:'row'},
+    el('div', {class:'field-wrap'}, el('label', {class:'field', for:'gpa-scale'}, 'Grading scale'), scaleSel),
+    addBtn, calcBtn, clearBtn), status);
+  root.insertBefore(el('div', {class:'table-scroll'}, table), status);
+  root.insertBefore(result, status);
+  root.appendChild(el('div', {class:'note'}, 'GPA is weighted by credit hours: the sum of (grade points × credits) divided by the total credits. Rows with no credits are skipped, so you can leave spares empty.'));
+
+  function calc(){
+    const scale = GRADE_SCALES[scaleSel.value];
+    let totalCredits = 0, totalPoints = 0, counted = 0, invalid = 0;
+    $$('tr', tbody).forEach(tr => {
+      const raw = $('input[type=number]', tr).value.trim();
+      const grade = $('select', tr).value;
+      if (!raw) return;
+      const credits = parseFloat(raw);
+      if (!Number.isFinite(credits) || credits <= 0) { invalid++; return; }
+      if (!(grade in scale)) return;
+      totalCredits += credits;
+      totalPoints += credits * scale[grade];
+      counted++;
+    });
+    if (!counted) {
+      result.classList.remove('on');
+      return setStatus(status, invalid
+        ? 'Credits must be a number greater than zero.'
+        : 'Add at least one subject with its credit hours and grade.', 'err');
+    }
+    const gpa = totalPoints / totalCredits;
+    const max = Math.max.apply(null, Object.values(scale));
+    result.classList.add('on');
+    result.firstChild.textContent = gpa.toFixed(2) + ' / ' + max.toFixed(1);
+    result.lastChild.textContent =
+      `${counted} subject${counted>1?'s':''} · ${totalCredits} credits · ${totalPoints.toFixed(1)} grade points · ${scaleSel.value}`;
+    setStatus(status, invalid ? `${invalid} row(s) skipped — credits must be greater than zero.` : '', invalid ? 'err' : 'info');
+  }
+
+  addRow(); addRow(); addRow();
+}
+
+/* =========================================================================
+   11) STUDY TIMER
+   ========================================================================= */
+function buildStudyTimer(root){
+  const PRESETS = {
+    'classic': {label:'Classic — 25 / 5', study:25*60, brk:5*60},
+    'long':    {label:'Deep work — 50 / 10', study:50*60, brk:10*60},
+    'short':   {label:'Quick sprint — 15 / 3', study:15*60, brk:3*60}
+  };
+  let preset = 'classic';
+  let mode = 'study';
+  let running = false;
+  let remaining = PRESETS[preset].study;
+  let endTime = 0;
+  let handle = null;
+  let rounds = 0;
+
+  const R = 108, CIRC = 2 * Math.PI * R;
+  const ring = el('div', {class:'timer-ring'});
+  ring.innerHTML =
+    '<svg viewBox="0 0 250 250" aria-hidden="true">' +
+    `<circle class="track" cx="125" cy="125" r="${R}"/>` +
+    `<circle class="bar" cx="125" cy="125" r="${R}" stroke-dasharray="${CIRC}" stroke-dashoffset="0"/>` +
+    '</svg>';
+  const modeEl = el('div', {class:'mode'}, 'FOCUS');
+  const timeEl = el('div', {class:'time'}, '25:00');
+  const roundsEl = el('div', {class:'rounds'}, 'No sessions finished yet');
+  ring.appendChild(el('div', {class:'timer-inner'}, modeEl, timeEl, roundsEl));
+
+  const presetSel = el('select', {id:'timer-preset', 'aria-label':'Session length'});
+  Object.keys(PRESETS).forEach(k => presetSel.appendChild(el('option', {value:k}, PRESETS[k].label)));
+
+  const startBtn = iconBtn('Start', I.play, '', () => start());
+  const pauseBtn = iconBtn('Pause', null, 'secondary', () => pause());
+  const resetBtn = iconBtn('Reset', null, 'secondary', () => reset());
+  const skipBtn  = iconBtn('Skip', null, 'secondary', () => switchMode(false));
+  pauseBtn.disabled = true;
+
+  root.appendChild(el('div', {class:'row'},
+    el('div', {class:'field-wrap'}, el('label', {class:'field', for:'timer-preset'}, 'Session length'), presetSel)));
+  root.appendChild(el('div', {class:'timer-card'}, ring,
+    el('div', {class:'timer-btns'}, startBtn, pauseBtn, resetBtn, skipBtn)));
+  root.appendChild(el('div', {class:'note'}, 'The countdown is anchored to real timestamps, so it stays accurate even if you switch tabs or your device sleeps. A soft chime plays when a session ends.'));
+
+  presetSel.addEventListener('change', () => { preset = presetSel.value; reset(); });
+
+  function total(){ return mode === 'study' ? PRESETS[preset].study : PRESETS[preset].brk; }
+  function fmt(s){
+    s = Math.max(0, Math.round(s));
+    return String(Math.floor(s/60)).padStart(2,'0') + ':' + String(s%60).padStart(2,'0');
+  }
+  function paint(){
+    timeEl.textContent = fmt(remaining);
+    modeEl.textContent = mode === 'study' ? 'FOCUS' : 'BREAK';
+    ring.classList.toggle('break', mode === 'break');
+    const frac = Math.min(1, Math.max(0, 1 - remaining / total()));
+    $('.bar', ring).setAttribute('stroke-dashoffset', String(CIRC * frac));
+    roundsEl.textContent = rounds === 0 ? 'No sessions finished yet'
+      : rounds + (rounds === 1 ? ' session done' : ' sessions done');
+    document.title = running ? `${fmt(remaining)} · StudyKit` : 'Study Timer — StudyKit';
+  }
+  function tick(){
+    if (!running) return;
+    remaining = Math.max(0, (endTime - Date.now())/1000);
+    if (remaining <= 0) { remaining = 0; paint(); switchMode(true); return; }
+    paint();
+  }
+  function start(){
+    if (running) return;
+    running = true;
+    endTime = Date.now() + remaining*1000;
+    startBtn.disabled = true; pauseBtn.disabled = false;
+    handle = setInterval(tick, 200);
+    paint();
+  }
+  function pause(){
+    if (!running) return;
+    running = false;
+    remaining = Math.max(0, (endTime - Date.now())/1000);
+    clearInterval(handle); handle = null;
+    startBtn.disabled = false; pauseBtn.disabled = true;
+    paint();
+  }
+  function reset(){
+    running = false;
+    clearInterval(handle); handle = null;
+    mode = 'study';
+    remaining = PRESETS[preset].study;
+    startBtn.disabled = false; pauseBtn.disabled = true;
+    paint();
+  }
+  function switchMode(auto){
+    if (auto && mode === 'study') rounds++;
+    mode = mode === 'study' ? 'break' : 'study';
+    remaining = total();
+    if (auto){
+      if (running) endTime = Date.now() + remaining*1000;
+      chime();
+    } else {
+      running = false;
+      clearInterval(handle); handle = null;
+      startBtn.disabled = false; pauseBtn.disabled = true;
+    }
+    paint();
+  }
+  function chime(){
+    try {
+      const Ctx = window.AudioContext || window.webkitAudioContext;
+      if (!Ctx) return;
+      const ctx = new Ctx();
+      const o = ctx.createOscillator(), g = ctx.createGain();
+      o.type = 'sine'; o.frequency.value = mode === 'break' ? 560 : 720;
+      g.gain.setValueAtTime(0.0001, ctx.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.12, ctx.currentTime + 0.04);
+      g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.7);
+      o.connect(g); g.connect(ctx.destination);
+      o.start();
+      setTimeout(() => { try { o.stop(); ctx.close(); } catch {} }, 800);
+    } catch {}
+  }
+  document.addEventListener('visibilitychange', onVis);
+  function onVis(){ if (!document.hidden) tick(); }
+
+  paint();
+  return () => {
+    clearInterval(handle);
+    document.removeEventListener('visibilitychange', onVis);
+    document.title = 'StudyKit — Free Tools for Students';
+  };
+}
+
+/* =========================================================================
+   HEADER, SEARCH, THEME
+   ========================================================================= */
+const SUN = '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M19.1 4.9l-1.4 1.4M6.3 17.7l-1.4 1.4"/>';
+const MOON = '<path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z"/>';
+function setupTheme(){
+  const btn = $('#themeBtn');
+  const saved = store.get('sk-theme');
+  const initial = saved || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+  const paint = (t) => {
+    document.documentElement.setAttribute('data-theme', t);
+    btn.innerHTML = '';
+    btn.appendChild(svgIcon(t === 'dark' ? SUN : MOON));
+    btn.setAttribute('aria-label', t === 'dark' ? 'Switch to light mode' : 'Switch to dark mode');
+  };
+  paint(initial);
+  btn.addEventListener('click', () => {
+    const next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    paint(next);
+    store.set('sk-theme', next);
+  });
+}
+function setupMenu(){
+  const t = $('#menuToggle'), nav = $('#navLinks');
+  t.addEventListener('click', () => {
+    const open = nav.classList.toggle('open');
+    t.setAttribute('aria-expanded', String(open));
+  });
+  nav.addEventListener('click', e => {
+    if (e.target.closest('a')) { nav.classList.remove('open'); t.setAttribute('aria-expanded','false'); }
+  });
+  document.addEventListener('click', e => {
+    if (!nav.classList.contains('open')) return;
+    if (e.target.closest('#navLinks') || e.target.closest('#menuToggle')) return;
+    nav.classList.remove('open'); t.setAttribute('aria-expanded','false');
+  });
+}
+function setupSearch(){
+  const home = $('#homeSearch');
+  home.addEventListener('input', () => { renderHomeGrid(); });
+  home.addEventListener('keydown', e => {
+    if (e.key === 'Enter' && home.value.trim()) {
+      location.hash = '#/tools?q=' + encodeURIComponent(home.value.trim());
+    }
+  });
+  $('#toolsSearch').addEventListener('input', renderToolsIndex);
+  $('#searchBtn').addEventListener('click', () => {
+    if ($('#view-home').classList.contains('active')) {
+      home.focus(); home.scrollIntoView({behavior:'smooth', block:'center'});
+    } else {
+      location.hash = '#/tools';
+      setTimeout(() => $('#toolsSearch').focus(), 80);
+    }
+  });
+}
+function renderHomeChips(){
+  catChips($('#homeCats'), homeCat, c => { homeCat = c; renderHomeChips(); renderHomeGrid(); });
+}
+
+/* =========================================================================
+   BOOT
+   ========================================================================= */
+function boot(){
+  setupTheme();
+  setupMenu();
+  renderHeroChips();
+  renderPopular();
+  renderHomeChips();
+  renderHomeGrid();
+  setupSearch();
+  renderHomeChips();
+  $('#year').textContent = new Date().getFullYear();
+  $('#ctaBtn').addEventListener('click', () => { location.hash = '#/tool/word-counter'; });
+  window.addEventListener('hashchange', () => {
+    if (!location.hash.startsWith('#/tool/')) document.title = 'StudyKit — Free Tools for Students';
+    route();
+  });
+  route();
+}
+if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
+else boot();
+})();
+</script>
+</body>
+</html>
